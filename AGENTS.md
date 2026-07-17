@@ -135,3 +135,23 @@ Before working on any task, read `codemap.md` to understand:
 - Data flow and integration points between modules
 
 For deep work on a specific folder, also read that folder's `codemap.md`.
+
+## Cursor Cloud specific instructions
+
+Product is the `frontend/` React + Vite web app (Synapse Notes) backed by a Supabase stack (Postgres + Auth + Storage + Realtime + Edge Functions). Standard build/run commands live in `README.md` and `frontend/package.json`.
+
+Startup layer: the update script only runs `npm ci` in `frontend/`. Everything below is manual and not run automatically.
+
+### Frontend (primary service)
+- Run dev server: `cd frontend && npm run dev` (Vite on `http://localhost:5173`). Checks: `npm run typecheck`, `npm run build`. There is no lint script.
+- Requires `frontend/.env` (gitignored) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. `frontend/src/lib/supabase.ts` throws at load if either is missing. On load the app auto signs in anonymously and auto-creates a "My Notes" workspace, so it needs a working backend to get past the "Starting Synapse..." spinner.
+
+### Supabase backend (local stack)
+- Needs Docker + the Supabase CLI (system deps — NOT in the update script; install them per session if absent). This VM is docker-in-docker: install Docker, then in `/etc/docker/daemon.json` set `storage-driver: fuse-overlayfs` and `features.containerd-snapshotter: false` (required for Docker 29+), use iptables-legacy, and `chmod 666 /var/run/docker.sock` for non-root access.
+- Bring up: `supabase start` from repo root (uses `supabase/config.toml`). Get URL + anon key with `supabase status` and put them in `frontend/.env` (`VITE_SUPABASE_URL=http://127.0.0.1:54321`).
+- `supabase/config.toml` sets `auth.enable_anonymous_sign_ins = true` — required, since the app relies on anonymous auth.
+- Gotcha: the migrations do NOT create storage buckets or grant table DML to the `anon`/`authenticated` API roles (hosted Supabase provisions these out of band). `supabase/seed.sql` seeds the `audio`/`images` buckets and those grants; it runs automatically on `supabase start` / `supabase db reset`. Without it, direct note reads/writes fail with HTTP 406 / "permission denied for table notes".
+
+### Known limitations here
+- Voice recording (`/record`) needs a real microphone via `getUserMedia`; this headless VM has none, so recording shows "No microphone found". Verify note create/read via the app's data path (or a REST/`psql` insert into the session's workspace, which surfaces live on Home via Realtime) instead of the mic UI.
+- AI edge functions (`transcribe`, `generate-image`, `generate-embedding`, `semantic-search`, `ask-notes`) need provider secrets (`GOOGLE_API_KEY`, `REPLICATE_API_TOKEN`, etc.) set as Supabase function secrets. Without them a note is still created, but background transcription/image/embedding processing fails.
