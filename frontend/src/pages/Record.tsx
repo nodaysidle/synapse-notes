@@ -135,12 +135,8 @@ export default function Record() {
       animationRef.current = requestAnimationFrame(draw)
       analyser.getByteFrequencyData(dataArray)
 
-      ctx.fillStyle = 'rgba(3, 7, 12, 0.58)'
+      ctx.fillStyle = 'rgba(6, 6, 9, 0.58)'
       ctx.fillRect(0, 0, logicalWidth, logicalHeight)
-      const gradient = ctx.createLinearGradient(0, 0, logicalWidth, 0)
-      gradient.addColorStop(0, '#26f0d1')
-      gradient.addColorStop(0.62, '#f5cf65')
-      gradient.addColorStop(1, '#ff6f61')
 
       const barWidth = (logicalWidth / bufferLength) * 2.5
       let x = 0
@@ -148,7 +144,7 @@ export default function Record() {
       for (let i = 0; i < bufferLength; i++) {
         const barHeight = (dataArray[i] / 255) * logicalHeight * 0.8
 
-        ctx.fillStyle = gradient
+        ctx.fillStyle = '#C8FF00'
         ctx.fillRect(x, logicalHeight - barHeight, barWidth, barHeight)
         x += barWidth + 1
       }

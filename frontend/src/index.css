@@ -6,7 +6,7 @@
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   html,
@@ -17,11 +17,11 @@
 
   body {
     @apply bg-base text-white antialiased;
-    background-color: #070b10;
+    background-color: #0A0A0F;
     background-image:
-      url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%2326f0d1' stroke-opacity='.09' stroke-width='1'%3E%3Cpath d='M18 34h48l23 25h42'/%3E%3Cpath d='M28 128h38l24-27h62'/%3E%3Cpath d='M122 18v39l27 24v61'/%3E%3Ccircle cx='18' cy='34' r='3' fill='%23f5cf65' fill-opacity='.45' stroke='none'/%3E%3Ccircle cx='131' cy='59' r='3' fill='%23ff6f61' fill-opacity='.42' stroke='none'/%3E%3Ccircle cx='90' cy='101' r='3' fill='%238f7cff' fill-opacity='.42' stroke='none'/%3E%3C/g%3E%3C/svg%3E"),
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23C8FF00' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M18 34h48l23 25h42'/%3E%3Cpath d='M28 128h38l24-27h62'/%3E%3Cpath d='M122 18v39l27 24v61'/%3E%3Ccircle cx='18' cy='34' r='3' fill='%23C8FF00' fill-opacity='.32' stroke='none'/%3E%3Ccircle cx='131' cy='59' r='3' fill='%23F0F0F5' fill-opacity='.28' stroke='none'/%3E%3Ccircle cx='90' cy='101' r='3' fill='%236B6B80' fill-opacity='.32' stroke='none'/%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
     background-size: 180px 180px, 36px 36px, 36px 36px;
     min-height: 100vh;
     overflow-x: hidden;
@@ -31,17 +31,17 @@
 @layer components {
   .glass {
     @apply backdrop-blur-glass rounded-2xl;
-    background: rgba(10, 16, 24, 0.76);
-    border: 1px solid rgba(118, 244, 222, 0.16);
+    background: rgba(10, 10, 15, 0.76);
+    border: 1px solid rgba(200, 255, 0, 0.12);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
       0 14px 40px rgba(0, 0, 0, 0.34);
   }
 
   .glass-dark {
     @apply backdrop-blur-glass rounded-xl;
-    background: rgba(3, 7, 12, 0.62);
-    border: 1px solid rgba(245, 207, 101, 0.14);
+    background: rgba(5, 7, 10, 0.62);
+    border: 1px solid rgba(200, 255, 0, 0.10);
   }
 
   .glass-elevated {
@@ -49,36 +49,36 @@
   }
 
   .glass-input {
-    @apply border rounded-xl px-4 py-3 text-white placeholder-slate-400
+    @apply border rounded-xl px-4 py-3 text-white placeholder-[#6B6B80]
            focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20
            transition-all duration-200;
-    background: rgba(3, 7, 12, 0.7);
-    border-color: rgba(118, 244, 222, 0.16);
+    background: rgba(5, 7, 10, 0.7);
+    border-color: rgba(200, 255, 0, 0.12);
   }
 
   .btn-primary {
     @apply font-semibold px-6 py-3 rounded-xl
            transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-accent/50;
-    background: #f5cf65;
-    color: #061014;
-    box-shadow: 0 10px 30px rgba(245, 207, 101, 0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.14);
+    background: #C8FF00;
+    color: #0A0A0F;
+    box-shadow: 0 10px 30px rgba(200, 255, 0, 0.14), inset 0 -2px 0 rgba(0, 0, 0, 0.14);
   }
 
   .btn-primary:hover {
-    background: #ffe58a;
+    background: #d4ff1a;
   }
 
   .btn-secondary {
     @apply glass text-white font-medium px-6 py-3
            transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]
            focus:outline-none focus:ring-2 focus:ring-white/20;
-    color: #f7fffc;
+    color: #F0F0F5;
   }
 
   .btn-secondary:hover {
-    background: rgba(20, 184, 166, 0.16);
-    border-color: rgba(245, 207, 101, 0.24);
+    background: rgba(200, 255, 0, 0.08);
+    border-color: rgba(200, 255, 0, 0.18);
   }
 
   .btn-icon {
@@ -91,12 +91,12 @@
            hover:scale-105 active:scale-95
            transition-transform duration-200;
     position: relative;
-    background: #111922;
-    border: 1px solid rgba(245, 207, 101, 0.4);
+    background: #14141F;
+    border: 1px solid rgba(200, 255, 0, 0.28);
     box-shadow:
-      0 0 0 10px rgba(245, 207, 101, 0.06),
-      0 22px 60px rgba(20, 184, 166, 0.24),
-      inset 0 0 22px rgba(38, 240, 209, 0.18);
+      0 0 0 10px rgba(200, 255, 0, 0.04),
+      0 22px 60px rgba(200, 255, 0, 0.12),
+      inset 0 0 22px rgba(200, 255, 0, 0.10);
     overflow: hidden;
   }
 
@@ -104,8 +104,8 @@
     content: '';
     position: absolute;
     inset: -20%;
-    background: repeating-conic-gradient(from 10deg, #26f0d1 0 10deg, #f5cf65 10deg 17deg, transparent 17deg 32deg);
-    opacity: 0.32;
+    background: repeating-conic-gradient(from 10deg, #C8FF00 0 10deg, #F0F0F5 10deg 17deg, transparent 17deg 32deg);
+    opacity: 0.22;
     animation: slow-spin 12s linear infinite;
   }
 
@@ -114,8 +114,8 @@
     position: absolute;
     inset: 9px;
     border-radius: 9999px;
-    background: #081017;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0A0A0F;
+    border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .btn-mic svg {
@@ -124,8 +124,8 @@
   }
 
   .btn-mic-recording {
-    @apply w-20 h-20 rounded-full bg-rose-500 flex items-center justify-center
-           shadow-[0_0_30px_rgba(244,63,94,0.5)] animate-pulse
+    @apply w-20 h-20 rounded-full bg-[#ff6767] flex items-center justify-center
+           shadow-[0_0_30px_rgba(255,103,103,0.4)] animate-pulse
            hover:scale-105 active:scale-95 transition-transform duration-200;
   }
 
@@ -140,13 +140,13 @@
     position: absolute;
     inset: 0 0 auto 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(245, 207, 101, 0.85), rgba(38, 240, 209, 0.65), transparent);
-    opacity: 0.58;
+    background: linear-gradient(90deg, transparent, rgba(200, 255, 0, 0.55), rgba(240, 240, 245, 0.25), transparent);
+    opacity: 0.48;
   }
 
   .card:hover {
-    background: rgba(13, 23, 32, 0.86);
-    border-color: rgba(245, 207, 101, 0.22);
+    background: rgba(14, 14, 21, 0.86);
+    border-color: rgba(200, 255, 0, 0.16);
   }
 
   .text-heading {
@@ -154,11 +154,11 @@
   }
 
   .text-body {
-    @apply text-slate-300 leading-relaxed;
+    @apply text-[#6B6B80] leading-relaxed;
   }
 
   .text-muted {
-    @apply text-slate-400;
+    @apply text-[#6B6B80];
   }
 
   .screen-shell {
@@ -176,18 +176,18 @@
   }
 
   .screen-subtitle {
-    @apply mt-2 text-sm leading-relaxed text-slate-400;
+    @apply mt-2 text-sm leading-relaxed text-[#6B6B80];
   }
 
   .stat-strip {
     @apply grid grid-cols-3 gap-2 rounded-2xl p-2;
-    background: rgba(3, 7, 12, 0.46);
-    border: 1px solid rgba(118, 244, 222, 0.12);
+    background: rgba(5, 7, 10, 0.46);
+    border: 1px solid rgba(200, 255, 0, 0.08);
   }
 
   .stat-cell {
     @apply rounded-xl px-3 py-3 text-center;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .status-pill {
@@ -204,26 +204,26 @@
   }
 
   .status-ready {
-    color: #26f0d1;
-    background: rgba(38, 240, 209, 0.13);
+    color: #C8FF00;
+    background: rgba(200, 255, 0, 0.10);
   }
 
   .status-waiting {
-    color: #f5cf65;
-    background: rgba(245, 207, 101, 0.13);
+    color: #F0F0F5;
+    background: rgba(240, 240, 245, 0.10);
   }
 
   .status-failed {
-    color: #ff8a7f;
-    background: rgba(255, 111, 97, 0.14);
+    color: #ff6767;
+    background: rgba(255, 103, 103, 0.12);
   }
 
   .note-thumb {
     @apply relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl;
     background:
-      linear-gradient(135deg, rgba(38, 240, 209, 0.16), rgba(245, 207, 101, 0.12)),
-      rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(118, 244, 222, 0.14);
+      linear-gradient(135deg, rgba(200, 255, 0, 0.10), rgba(107, 107, 128, 0.08)),
+      rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(200, 255, 0, 0.10);
   }
 
   .note-thumb::after {
@@ -233,10 +233,10 @@
     width: 10px;
     height: 10px;
     border-radius: 9999px;
-    background: #f5cf65;
+    background: #C8FF00;
     box-shadow:
-      -20px -22px 0 -4px #26f0d1,
-      -6px -36px 0 -5px #8f7cff;
+      -20px -22px 0 -4px #F0F0F5,
+      -6px -36px 0 -5px #6B6B80;
   }
 
   .note-thumb img {
@@ -248,32 +248,32 @@
   .record-stage {
     @apply w-full max-w-sm rounded-[2rem] px-5 py-7 text-center;
     background:
-      linear-gradient(180deg, rgba(12, 22, 31, 0.9), rgba(5, 9, 14, 0.82)),
-      rgba(7, 11, 16, 0.9);
-    border: 1px solid rgba(118, 244, 222, 0.18);
+      linear-gradient(180deg, rgba(12, 14, 20, 0.9), rgba(8, 9, 13, 0.82)),
+      rgba(10, 10, 15, 0.9);
+    border: 1px solid rgba(200, 255, 0, 0.12);
     box-shadow:
       0 28px 80px rgba(0, 0, 0, 0.45),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .waveform-canvas {
-    border: 1px solid rgba(38, 240, 209, 0.16);
-    background: rgba(3, 7, 12, 0.6);
-    box-shadow: inset 0 0 26px rgba(38, 240, 209, 0.08);
+    border: 1px solid rgba(200, 255, 0, 0.10);
+    background: rgba(5, 7, 10, 0.6);
+    box-shadow: inset 0 0 26px rgba(200, 255, 0, 0.05);
   }
 
   .record-stop {
     @apply flex h-20 w-20 items-center justify-center rounded-full transition-transform duration-200 hover:scale-105 active:scale-95;
-    background: #ff6f61;
+    background: #ff6767;
     box-shadow:
-      0 0 0 10px rgba(255, 111, 97, 0.08),
-      0 18px 48px rgba(255, 111, 97, 0.32);
+      0 0 0 10px rgba(255, 103, 103, 0.06),
+      0 18px 48px rgba(255, 103, 103, 0.24);
   }
 
   .visual-frame {
     @apply overflow-hidden rounded-2xl;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(245, 207, 101, 0.16);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(200, 255, 0, 0.10);
   }
 
   .visual-frame img {
@@ -282,25 +282,25 @@
 
   .gallery-tile {
     @apply relative overflow-hidden rounded-2xl border text-left transition-transform duration-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-accent/60;
-    border-color: rgba(118, 244, 222, 0.16);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(200, 255, 0, 0.10);
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .gallery-tile::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, transparent 44%, rgba(3, 7, 12, 0.88));
+    background: linear-gradient(180deg, transparent 44%, rgba(5, 7, 10, 0.88));
     pointer-events: none;
   }
 
   .empty-orbit {
     @apply mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full;
     background:
-      radial-gradient(circle at 38% 34%, rgba(245, 207, 101, 0.9) 0 5px, transparent 6px),
-      radial-gradient(circle at 62% 62%, rgba(38, 240, 209, 0.9) 0 4px, transparent 5px),
-      rgba(38, 240, 209, 0.08);
-    border: 1px solid rgba(118, 244, 222, 0.16);
+      radial-gradient(circle at 38% 34%, rgba(200, 255, 0, 0.7) 0 5px, transparent 6px),
+      radial-gradient(circle at 62% 62%, rgba(240, 240, 245, 0.6) 0 4px, transparent 5px),
+      rgba(200, 255, 0, 0.05);
+    border: 1px solid rgba(200, 255, 0, 0.10);
   }
 }
 
@@ -315,10 +315,10 @@
     position: fixed;
     inset: 0;
     background:
-      repeating-linear-gradient(115deg, rgba(38, 240, 209, 0.055) 0 1px, transparent 1px 26px),
-      repeating-linear-gradient(25deg, rgba(245, 207, 101, 0.035) 0 1px, transparent 1px 34px);
+      repeating-linear-gradient(115deg, rgba(200, 255, 0, 0.035) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(25deg, rgba(240, 240, 245, 0.02) 0 1px, transparent 1px 34px);
     pointer-events: none;
-    opacity: 0.65;
+    opacity: 0.55;
   }
 
   .synapse-emblem {
@@ -327,11 +327,11 @@
     height: 88px;
     margin-inline: auto;
     border-radius: 9999px;
-    border: 1px solid rgba(245, 207, 101, 0.32);
+    border: 1px solid rgba(200, 255, 0, 0.22);
     background:
-      linear-gradient(145deg, rgba(245, 207, 101, 0.18), transparent 52%),
-      #09121a;
-    box-shadow: 0 18px 55px rgba(38, 240, 209, 0.2), inset 0 0 30px rgba(143, 124, 255, 0.16);
+      linear-gradient(145deg, rgba(200, 255, 0, 0.12), transparent 52%),
+      #0A0A0F;
+    box-shadow: 0 18px 55px rgba(200, 255, 0, 0.10), inset 0 0 30px rgba(107, 107, 128, 0.08);
   }
 
   .synapse-emblem::before,
@@ -343,32 +343,32 @@
 
   .synapse-emblem::before {
     inset: 18px;
-    border: 1px solid rgba(38, 240, 209, 0.5);
+    border: 1px solid rgba(200, 255, 0, 0.36);
     box-shadow:
-      18px -8px 0 -7px #f5cf65,
-      -13px 16px 0 -8px #ff6f61,
-      14px 18px 0 -8px #8f7cff;
+      18px -8px 0 -7px #C8FF00,
+      -13px 16px 0 -8px #F0F0F5,
+      14px 18px 0 -8px #6B6B80;
   }
 
   .synapse-emblem::after {
     inset: 38px;
-    background: #f5cf65;
+    background: #C8FF00;
     box-shadow:
-      -22px -13px 0 -2px #26f0d1,
-      22px -4px 0 -3px #ff6f61,
-      4px 24px 0 -4px #8f7cff;
+      -22px -13px 0 -2px #F0F0F5,
+      22px -4px 0 -3px #6B6B80,
+      4px 24px 0 -4px #F0F0F5;
   }
 
   .synapse-record-surface {
-    background-color: rgba(7, 11, 16, 0.98);
+    background-color: rgba(10, 10, 15, 0.98);
     background-image:
-      repeating-linear-gradient(90deg, rgba(38, 240, 209, 0.055) 0 1px, transparent 1px 30px),
-      repeating-linear-gradient(0deg, rgba(245, 207, 101, 0.04) 0 1px, transparent 1px 30px);
+      repeating-linear-gradient(90deg, rgba(200, 255, 0, 0.035) 0 1px, transparent 1px 30px),
+      repeating-linear-gradient(0deg, rgba(240, 240, 245, 0.025) 0 1px, transparent 1px 30px);
   }
 
   .bottom-nav {
-    background: rgba(7, 11, 16, 0.88);
-    border-top: 1px solid rgba(245, 207, 101, 0.18);
+    background: rgba(10, 10, 15, 0.88);
+    border-top: 1px solid rgba(200, 255, 0, 0.12);
     box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.32);
   }
 
