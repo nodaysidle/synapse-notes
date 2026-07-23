@@ -255,14 +255,14 @@ export default function GraphView() {
     controls.dampingFactor = 0.05
     controlsRef.current = controls
 
-    const ambientLight = new THREE.AmbientLight(0x14b8a6, 0.4)
+    const ambientLight = new THREE.AmbientLight(0xC8FF00, 0.4)
     scene.add(ambientLight)
 
-    const pointLight1 = new THREE.PointLight(0x14b8a6, 0.8)
+    const pointLight1 = new THREE.PointLight(0xC8FF00, 0.8)
     pointLight1.position.set(50, 50, 50)
     scene.add(pointLight1)
 
-    const pointLight2 = new THREE.PointLight(0x06b6d4, 0.6)
+    const pointLight2 = new THREE.PointLight(0xC8FF00, 0.6)
     pointLight2.position.set(-50, -50, -50)
     scene.add(pointLight2)
 
@@ -278,10 +278,10 @@ export default function GraphView() {
     const tooltip = document.createElement('div')
     tooltip.className = 'fixed px-4 py-2 rounded-xl text-sm pointer-events-none opacity-0 transition-all duration-200 z-50 text-white font-medium shadow-lg'
     tooltip.style.cssText = `
-      background: rgba(20, 184, 166, 0.15);
+      background: rgba(200, 255, 0, 0.15);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(20, 184, 166, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(20, 184, 166, 0.2);
+      border: 1px solid rgba(200, 255, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(200, 255, 0, 0.2);
       display: none;
     `
     document.body.appendChild(tooltip)
@@ -367,7 +367,7 @@ export default function GraphView() {
       const baseSize = 2
       const nodeSize = baseSize + connectionCount * 0.5
 
-      const moodColor = moodColors[analysis.mood] || 0x14b8a6
+      const moodColor = moodColors[analysis.mood] || 0xC8FF00
       const color = new THREE.Color(moodColor)
       const glowIntensity = 0.3 + Math.min(connectionCount * 0.1, 0.5)
 
@@ -409,8 +409,8 @@ export default function GraphView() {
       if (sourceNode && targetNode) {
         const opacity = Math.min(0.8, link.value * 0.6 + 0.2)
         const edgeColor = link.value > 0.5
-          ? new THREE.Color(0x14b8a6)
-          : new THREE.Color(0x06b6d4)
+          ? new THREE.Color(0xC8FF00)
+          : new THREE.Color(0xC8FF00)
 
         const material = new THREE.LineBasicMaterial({
           color: edgeColor,
@@ -561,7 +561,7 @@ export default function GraphView() {
         <div className="absolute inset-0 flex items-center justify-center bg-base-dark/80 backdrop-blur-sm z-10">
           <div
             className="rounded-2xl shadow-xl p-8 text-center border border-accent/20"
-            style={{ background: 'rgba(20, 184, 166, 0.05)', backdropFilter: 'blur(16px)' }}
+            style={{ background: 'rgba(200, 255, 0, 0.05)', backdropFilter: 'blur(16px)' }}
           >
             <div role="status" aria-live="polite" className="relative mx-auto mb-4 w-12 h-12">
               <div className="absolute inset-0 rounded-full border-2 border-accent/20"></div>
@@ -609,12 +609,12 @@ export default function GraphView() {
             <div className="flex items-center">
               <div
                 className="w-4 h-4 rounded-full mr-3 shrink-0"
-                style={{ background: '#14b8a6', boxShadow: '0 0 12px rgba(20, 184, 166, 0.5)' }}
+                style={{ background: '#C8FF00', boxShadow: '0 0 12px rgba(200, 255, 0, 0.5)' }}
               ></div>
               <span>Notes ({noteCount})</span>
             </div>
             <div className="flex items-center">
-              <div className="w-4 h-0.5 mr-3 shrink-0" style={{ background: '#06b6d4' }}></div>
+              <div className="w-4 h-0.5 mr-3 shrink-0" style={{ background: '#C8FF00' }}></div>
               <span>Shared keywords</span>
             </div>
 
@@ -658,7 +658,7 @@ export default function GraphView() {
       {!loading && noteCount > 0 && (
         <div
           className="absolute top-6 right-6 z-10 px-4 py-2 rounded-xl border border-accent/20"
-          style={{ background: 'rgba(20, 184, 166, 0.1)', backdropFilter: 'blur(12px)' }}
+          style={{ background: 'rgba(200, 255, 0, 0.1)', backdropFilter: 'blur(12px)' }}
         >
           <span className="text-accent text-sm font-medium">{noteCount} notes</span>
           <span className="text-gray-500 text-sm ml-2 hidden sm:inline">in your knowledge graph</span>

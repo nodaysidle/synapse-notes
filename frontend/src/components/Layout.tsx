@@ -10,7 +10,7 @@ export default function Layout() {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex min-w-[64px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all ${
-      isActive ? 'bg-accent/10 text-accent shadow-[0_0_24px_rgba(38,240,209,0.12)]' : 'text-slate-400 hover:text-white'
+      isActive ? 'bg-accent/10 text-accent shadow-[0_0_24px_rgba(200,255,0,0.12)]' : 'text-slate-400 hover:text-white'
     }`
 
   return (

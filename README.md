@@ -1,3 +1,5 @@
+<img src=".github/social-preview.png" alt="Synapse Notes — NODAYSIDLE" width="100%">
+
 # Synapse Notes
 
 > Voice-first notes with AI transcription, generated visuals, semantic search, and a 3D knowledge graph.
