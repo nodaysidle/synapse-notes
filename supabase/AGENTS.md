@@ -13,6 +13,9 @@ Owns edge functions, migrations, and Supabase local/remote integration contracts
 
 - Never commit secrets or local credentials.
 - Treat migrations as persistent data changes; verify carefully before modifying.
+- Route all AI inference through OpenRouter from Edge Functions; never expose `OPENROUTER_API_KEY` to the frontend.
+- Keep note, query, and RAG embeddings on the shared `google/gemini-embedding-001` 768-dimensional vector space unless an explicit migration and full re-embedding are approved.
+- Keep shared OpenRouter request and embedding behavior in `functions/_shared/openrouter.ts`.
 
 ## Work Guidance
 

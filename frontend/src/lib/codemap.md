@@ -11,13 +11,14 @@ Data-access and integration layer: Supabase client, typed database schema, and e
   - `generateImage(transcript)` → calls `generate-image`, returns `{ imageBase64 }`
   - `generateEmbedding(text)` → calls `generate-embedding`, returns `{ embedding: number[] }`
   - `semanticSearch(query, workspaceId)` → calls `semantic-search`, returns `SimilarNote[]`
-  - `processNote(noteId, blob, workspaceId)` — orchestrates all four steps sequentially.
+  - `processNote(noteId, blob, existingAudioUrl?)` — transcribes, then awaits embedding and optional image generation before settling.
+  - `retryProcessNote(noteId, audioUrl)` — reuses stored audio for recovery without re-recording.
 
 ## Flow
 `processNote()` pipeline:
 ```
-upload audio → transcribe → save transcript → generate image → save image
-            → generate embedding → save embedding
+upload/reuse audio → transcribe → save transcript → embedding + image in parallel
+                  → save embedding and mark completed after both settle
 ```
 
 ## Integration

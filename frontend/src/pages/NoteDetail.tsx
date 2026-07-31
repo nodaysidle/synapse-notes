@@ -3,10 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Card, Button, Input } from '../components/ui'
 import { Spinner } from '../components/ui/Spinner'
-import { semanticSearch } from '../lib/edgeFunctions'
+import { retryProcessNote, semanticSearch } from '../lib/edgeFunctions'
 import type { SimilarNote } from '../lib/edgeFunctions'
 import type { Note } from '../lib/database.types'
 import { formatDuration, formatDateLong } from '../utils/formatting'
+import { saveImageToDevice } from '../utils/saveImageToDevice'
+
+const STUCK_PROCESSING_MS = 3 * 60 * 1000
 
 function statusClass(status: string) {
   if (status === 'failed') return 'status-failed'
@@ -28,6 +31,7 @@ export default function NoteDetail() {
   const [note, setNote] = useState<Note | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState('')
   const [editContent, setEditContent] = useState('')
@@ -37,11 +41,17 @@ export default function NoteDetail() {
   const [similarNotes, setSimilarNotes] = useState<SimilarNote[]>([])
   const [loadingSimilar, setLoadingSimilar] = useState(false)
   const [showSimilar, setShowSimilar] = useState(false)
+  const [retrying, setRetrying] = useState(false)
+  const [retryError, setRetryError] = useState<string | null>(null)
+  const [downloadState, setDownloadState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [downloadMessage, setDownloadMessage] = useState('')
+  const [imageLoadFailed, setImageLoadFailed] = useState(false)
+  const [, setClock] = useState(() => Date.now())
 
-  const fetchNote = useCallback(async () => {
+  const fetchNote = useCallback(async (showLoading = true) => {
     if (!id) return
     try {
-      setLoading(true)
+      if (showLoading) setLoading(true)
       const { data, error: fetchError } = await supabase
         .from('notes')
         .select('*')
@@ -70,6 +80,11 @@ export default function NoteDetail() {
     setShowDeleteConfirm(false)
     setIsEditing(false)
     setError(null)
+    setActionError(null)
+    setRetryError(null)
+    setDownloadState('idle')
+    setDownloadMessage('')
+    setImageLoadFailed(false)
   }, [id])
 
   useEffect(() => {
@@ -83,15 +98,27 @@ export default function NoteDetail() {
         schema: 'public',
         table: 'notes',
         filter: `id=eq.${id}`,
-      }, () => fetchNote())
+      }, () => fetchNote(false))
       .subscribe()
 
     return () => { channel.unsubscribe() }
   }, [id, fetchNote])
 
+  useEffect(() => {
+    const interval = window.setInterval(() => setClock(Date.now()), 30_000)
+    return () => window.clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    setImageLoadFailed(false)
+    setDownloadState('idle')
+    setDownloadMessage('')
+  }, [note?.image_url])
+
   const handleSave = async () => {
     if (!id || !note) return
     setSaving(true)
+    setActionError(null)
     try {
       const { error: updateError } = await supabase
         .from('notes')
@@ -102,7 +129,7 @@ export default function NoteDetail() {
       setIsEditing(false)
     } catch (err) {
       console.error('Failed to save:', err)
-      setError('Failed to save note')
+      setActionError('Could not save your changes. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -111,12 +138,13 @@ export default function NoteDetail() {
   const handleDelete = async () => {
     if (!id || deleting) return
     setDeleting(true)
+    setActionError(null)
     try {
       await supabase.from('notes').delete().eq('id', id)
       navigate('/notes')
     } catch (err) {
       console.error('Failed to delete:', err)
-      setError('Failed to delete note')
+      setActionError('Could not delete this note. Please try again.')
     } finally {
       setDeleting(false)
       setShowDeleteConfirm(false)
@@ -146,6 +174,37 @@ export default function NoteDetail() {
     }
   }
 
+  const handleRetryProcessing = async () => {
+    if (!id || !note?.audio_url || retrying) return
+    setRetrying(true)
+    setRetryError(null)
+    setActionError(null)
+    try {
+      await retryProcessNote(id, note.audio_url)
+      await fetchNote(false)
+    } catch (err) {
+      console.error('Retry processing failed:', err)
+      setRetryError('Processing failed again. Your recording is safe; check your connection and retry.')
+    } finally {
+      setRetrying(false)
+    }
+  }
+
+  const handleSaveImage = async () => {
+    if (!note?.image_url || downloadState === 'saving') return
+    setDownloadState('saving')
+    setDownloadMessage('')
+    try {
+      const message = await saveImageToDevice(note.image_url, note.title)
+      setDownloadState('saved')
+      setDownloadMessage(message)
+    } catch (err) {
+      console.error('Failed to save image:', err)
+      setDownloadState('error')
+      setDownloadMessage('Could not save the image. Check your connection and try again.')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -166,6 +225,9 @@ export default function NoteDetail() {
   }
 
   const isProcessing = ['pending', 'processing'].includes(note.embedding_status)
+  const processingAge = Date.now() - new Date(note.updated_at).getTime()
+  const isStuck = isProcessing && processingAge > STUCK_PROCESSING_MS
+  const needsRecovery = note.embedding_status === 'failed' || isStuck
   const shouldShowVisualizationState =
     note.image_url === null && (note.transcript || isProcessing) && note.embedding_status !== 'failed'
   const visualizationIsActivelyGenerating = isProcessing || !note.transcript
@@ -215,6 +277,53 @@ export default function NoteDetail() {
               </span>
             )}
           </div>
+
+          {needsRecovery && (
+            <div
+              role="alert"
+              className={`mb-6 rounded-2xl border px-4 py-4 backdrop-blur-xl ${
+                note.embedding_status === 'failed'
+                  ? 'border-rose-400/40 bg-rose-500/10 text-rose-100'
+                  : 'border-amber-300/35 bg-amber-400/10 text-amber-100'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <svg className="mt-0.5 h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 4.5h.008v.008H12V16.5z" />
+                </svg>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">
+                    {note.embedding_status === 'failed' ? 'Note processing failed' : 'Processing was interrupted'}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed opacity-80">
+                    {note.embedding_status === 'failed'
+                      ? 'Synapse could not finish the transcript or search index.'
+                      : 'This note has been processing for more than three minutes.'}
+                    {' '}Your recording is safe—retry without recording again.
+                  </p>
+                  {!note.audio_url && (
+                    <p className="mt-2 text-xs opacity-80">This note has no stored audio to retry.</p>
+                  )}
+                  {retryError && <p className="mt-2 text-sm text-rose-200">{retryError}</p>}
+                  <Button
+                    size="sm"
+                    onClick={handleRetryProcessing}
+                    loading={retrying}
+                    disabled={!note.audio_url}
+                    className="mt-3"
+                  >
+                    {retrying ? 'Retrying processing' : 'Retry processing'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {actionError && (
+            <div role="alert" className="mb-6 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              {actionError}
+            </div>
+          )}
 
           {/* Content/Transcript */}
           {isEditing ? (
@@ -297,16 +406,57 @@ export default function NoteDetail() {
         {/* AI Visualization */}
         {note.image_url ? (
           <Card className="mb-6">
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-3 flex items-center justify-between gap-3">
               <h2 className="text-sm font-semibold text-white">AI Visualization</h2>
-              <span className="status-pill status-ready">Ready</span>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleSaveImage}
+                loading={downloadState === 'saving'}
+                className="shrink-0"
+              >
+                {downloadState !== 'saving' && (
+                  <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" />
+                  </svg>
+                )}
+                {downloadState === 'saving' ? 'Saving' : 'Save to phone'}
+              </Button>
             </div>
-            <div className="visual-frame aspect-square">
+            {downloadMessage && (
+              <p
+                role="status"
+                className={`mb-3 text-sm ${downloadState === 'error' ? 'text-rose-300' : 'text-accent'}`}
+              >
+                {downloadMessage}
+              </p>
+            )}
+            <div className="visual-frame aspect-square flex items-center justify-center">
               <img
                 src={note.image_url}
                 alt="AI visualization"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                className={imageLoadFailed ? 'hidden' : ''}
+                onError={() => setImageLoadFailed(true)}
               />
+              {imageLoadFailed && (
+                <div className="px-6 text-center">
+                  <div className="empty-orbit" aria-hidden="true" />
+                  <p className="text-sm text-rose-300">The visualization could not be loaded.</p>
+                </div>
+              )}
+            </div>
+          </Card>
+        ) : note.image_url === '' ? (
+          <Card className="mb-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white">AI Visualization</h2>
+              <span className="status-pill status-failed">Failed</span>
+            </div>
+            <div className="visual-frame aspect-square flex items-center justify-center px-6 text-center">
+              <div>
+                <div className="empty-orbit" aria-hidden="true" />
+                <p className="text-sm text-muted">The note is ready, but its optional visualization could not be generated.</p>
+              </div>
             </div>
           </Card>
         ) : shouldShowVisualizationState && (
