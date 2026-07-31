@@ -7,6 +7,7 @@ Owns product/media/brand assets checked into source.
 ## Ownership
 
 - `20260316_112224.png`
+- `synapse-notes-icon.png` — source master for Android launcher icon densities.
 
 ## Local Contracts
 

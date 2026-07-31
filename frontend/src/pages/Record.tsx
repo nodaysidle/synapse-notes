@@ -17,6 +17,7 @@ export default function Record() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [saving, setSaving] = useState(false)
   const [recordingError, setRecordingError] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -32,6 +33,7 @@ export default function Record() {
   // Start recording
   const startRecording = async () => {
     setRecordingError(null)
+    setSaveError(null)
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream
@@ -164,6 +166,7 @@ export default function Record() {
     if (!audioBlob || !workspace || !user) return
 
     setSaving(true)
+    setSaveError(null)
     try {
       // Upload audio to Supabase Storage
       const filename = `${workspace.id}/${user.id}/${Date.now()}.webm`
@@ -208,6 +211,7 @@ export default function Record() {
         })
     } catch (err) {
       console.error('Failed to save:', err)
+      setSaveError('Your recording is still here, but the note could not be saved. Check your connection and try again.')
     } finally {
       setSaving(false)
     }
@@ -243,6 +247,16 @@ export default function Record() {
           >
             Go back
           </button>
+        </div>
+      )}
+
+      {saveError && (
+        <div
+          role="alert"
+          className="absolute top-6 left-6 right-6 mx-auto max-w-sm rounded-2xl border border-rose-400/40 bg-rose-500/15 px-4 py-3 text-sm text-rose-200 backdrop-blur-xl"
+        >
+          <p className="font-semibold text-rose-100">Could not save note</p>
+          <p className="mt-1 leading-relaxed">{saveError}</p>
         </div>
       )}
 
@@ -289,7 +303,7 @@ export default function Record() {
             </button>
           ) : (
             <Button onClick={handleSave} loading={saving} className="px-8">
-              Save note
+              {saveError ? 'Try save again' : 'Save note'}
             </Button>
           )}
 

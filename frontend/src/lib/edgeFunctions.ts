@@ -172,24 +172,11 @@ export async function processNote(
       .update({ transcript, title: generateTitle(transcript) })
       .eq('id', noteId)
 
-    // ── Step 2: Generate embedding (background, non-blocking) ───────────────
-    generateEmbedding(transcript)
-      .then(async ({ embedding }) => {
-        await supabase
-          .from('notes')
-          .update({ embedding, embedding_status: 'completed' })
-          .eq('id', noteId)
-      })
-      .catch((err) => {
-        console.error('Embedding generation failed:', err)
-        supabase
-          .from('notes')
-          .update({ embedding_status: 'failed' })
-          .eq('id', noteId)
-      })
-
-    // ── Step 3: Generate image (background, non-blocking) ───────────────────
-    generateImage(transcript.substring(0, 500))
+    // Generate the required embedding and optional visualization in parallel,
+    // but do not report success until both tasks have settled. This makes a
+    // Retry button truthful: its loading state maps to the whole pipeline.
+    const embeddingTask = generateEmbedding(transcript)
+    const imageTask = generateImage(transcript.substring(0, 500))
       .then(async ({ imageBase64: imgB64, mimeType }) => {
         const contentType = mimeType || 'image/png'
         const filename = `images/${noteId}-${Date.now()}.${imageExtension(contentType)}`
@@ -210,16 +197,45 @@ export async function processNote(
       })
       .catch(async (err) => {
         console.error('Image generation failed:', err)
-        try {
-          await supabase.from('notes').update({ image_url: '' }).eq('id', noteId)
-        } catch (_) { /* best effort */ }
+        await supabase.from('notes').update({ image_url: '' }).eq('id', noteId)
       })
+
+    const [embeddingResult] = await Promise.allSettled([embeddingTask, imageTask])
+    if (embeddingResult.status === 'rejected') throw embeddingResult.reason
+
+    const { embedding } = embeddingResult.value
+    const { error: completionError } = await supabase
+      .from('notes')
+      .update({ embedding, embedding_status: 'completed' })
+      .eq('id', noteId)
+
+    if (completionError) throw completionError
 
   } catch (error) {
     console.error('Note processing failed:', error)
     await supabase.from('notes').update({ embedding_status: 'failed' }).eq('id', noteId)
     throw error
   }
+}
+
+/**
+ * Re-run processing for an existing note without asking the user to record
+ * again. The edge function can fetch the public audio URL directly, so a
+ * browser CORS failure while reading the Blob locally is non-fatal.
+ */
+export async function retryProcessNote(noteId: string, audioUrl: string): Promise<void> {
+  let audioBlob: Blob
+
+  try {
+    const response = await fetch(audioUrl)
+    if (!response.ok) throw new Error(`Audio download failed (${response.status})`)
+    audioBlob = await response.blob()
+  } catch (error) {
+    console.warn('Could not read stored audio locally; retrying by URL:', error)
+    audioBlob = new Blob([], { type: audioMimeType(audioUrl) })
+  }
+
+  await processNote(noteId, audioBlob, audioUrl)
 }
 
 /**
@@ -257,6 +273,16 @@ function generateTitle(transcript: string): string {
   const firstSentence = transcript.split(/[.!?]/)[0].trim()
   if (firstSentence.length > 0 && firstSentence.length <= 50) return firstSentence
   return transcript.substring(0, 47).trim() + '...'
+}
+
+function audioMimeType(url: string): string {
+  const pathname = url.split('?')[0].toLowerCase()
+  if (pathname.endsWith('.ogg')) return 'audio/ogg'
+  if (pathname.endsWith('.mp4') || pathname.endsWith('.m4a')) return 'audio/mp4'
+  if (pathname.endsWith('.wav')) return 'audio/wav'
+  if (pathname.endsWith('.flac')) return 'audio/flac'
+  if (pathname.endsWith('.mp3')) return 'audio/mpeg'
+  return 'audio/webm'
 }
 
 /**
