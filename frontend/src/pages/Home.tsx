@@ -19,6 +19,19 @@ function statusLabel(status: string) {
   return 'Queued'
 }
 
+function MicIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+      />
+    </svg>
+  )
+}
+
 export default function Home() {
   const navigate = useNavigate()
   const { workspace } = useWorkspace()
@@ -44,7 +57,6 @@ export default function Home() {
 
     fetchRecent()
 
-    // Subscribe to new notes
     const channel = supabase
       .channel('recent_notes')
       .on(
@@ -68,88 +80,68 @@ export default function Home() {
     navigate('/record')
   }
 
-  const visualCount = recentNotes.filter((note) => note.image_url).length
-  const activeCount = recentNotes.filter((note) => ['pending', 'processing'].includes(note.embedding_status)).length
-
   return (
-    <div className="screen-shell flex flex-col items-center justify-center">
-      {/* Header */}
-      <div className="w-full max-w-md text-center mb-8">
-        <div className="synapse-emblem mb-6" aria-hidden="true" />
-        <h1 className="screen-title">Synapse</h1>
-        <p className="screen-subtitle mx-auto max-w-xs">Thoughts in motion, gathered in one place.</p>
-
-        <div className="stat-strip mt-6">
-          <div className="stat-cell">
-            <div className="text-lg font-bold text-white">{recentNotes.length}</div>
-            <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">Recent</div>
-          </div>
-          <div className="stat-cell">
-            <div className="text-lg font-bold text-accent-secondary">{visualCount}</div>
-            <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">Visuals</div>
-          </div>
-          <div className="stat-cell">
-            <div className="text-lg font-bold text-accent">{activeCount}</div>
-            <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">Live</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Big mic button */}
-      <button
-        onClick={handleMicClick}
-        className="btn-mic"
-        aria-label="Start recording"
-      >
-        <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-        </svg>
-      </button>
-
-      <p className="text-muted mt-5 mb-9 text-sm">Ready when you are</p>
-
-      {/* Recent notes */}
-      {recentNotes.length > 0 && (
-        <div className="w-full max-w-md">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-white">Recent notes</h2>
+    <div className="screen-shell">
+      <div className="screen-header">
+        <div className="flex items-baseline justify-between gap-4">
+          <h1 className="screen-title">Notes</h1>
+          {recentNotes.length > 0 && (
             <button
               type="button"
               onClick={() => navigate('/notes')}
-              className="text-xs font-semibold text-accent transition-colors hover:text-accent-light"
+              className="text-sm text-muted transition-colors hover:text-white"
             >
               View all
             </button>
-          </div>
-          <div className="space-y-3">
-            {recentNotes.map((note) => (
-              <Card
-                key={note.id}
-                variant="interactive"
-                onClick={() => navigate(`/notes/${note.id}`)}
-                className="flex items-center gap-4"
-              >
-                <div className="note-thumb">
-                  {note.image_url && <img src={note.image_url} alt="" loading="lazy" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="mb-1 flex items-center gap-2">
-                    <h3 className="min-w-0 truncate text-sm font-semibold text-white">{note.title}</h3>
-                    <span className={`status-pill ${statusClass(note.embedding_status)} shrink-0`}>
-                      {statusLabel(note.embedding_status)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted truncate">
-                    {note.transcript?.slice(0, 60) || note.content?.slice(0, 60) || 'No content'}
-                  </p>
-                </div>
-                <span className="text-xs text-muted whitespace-nowrap">
-                  {formatDateShort(note.created_at)}
-                </span>
-              </Card>
-            ))}
-          </div>
+          )}
         </div>
+      </div>
+
+      {recentNotes.length === 0 ? (
+        <div className="mx-auto flex max-w-md flex-col items-center justify-center py-16 text-center">
+          <p className="mb-8 text-sm text-muted">No notes yet</p>
+          <button type="button" onClick={handleMicClick} className="btn-mic" aria-label="Start recording">
+            <MicIcon className="h-7 w-7 text-white" />
+          </button>
+        </div>
+      ) : (
+        <div className="mx-auto max-w-md space-y-3">
+          {recentNotes.map((note) => (
+            <Card
+              key={note.id}
+              variant="interactive"
+              onClick={() => navigate(`/notes/${note.id}`)}
+              className="flex items-center gap-4"
+            >
+              <div className="note-thumb">
+                {note.image_url && <img src={note.image_url} alt="" loading="lazy" />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-center gap-2">
+                  <h3 className="min-w-0 truncate text-sm font-semibold text-white">{note.title}</h3>
+                  <span className={`status-pill ${statusClass(note.embedding_status)} shrink-0`}>
+                    {statusLabel(note.embedding_status)}
+                  </span>
+                </div>
+                <p className="truncate text-sm text-muted">
+                  {note.transcript?.slice(0, 60) || note.content?.slice(0, 60) || 'No content'}
+                </p>
+              </div>
+              <span className="whitespace-nowrap text-xs text-muted">{formatDateShort(note.created_at)}</span>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {recentNotes.length > 0 && (
+        <button
+          type="button"
+          onClick={handleMicClick}
+          className="btn-mic btn-mic-fab"
+          aria-label="Start recording"
+        >
+          <MicIcon className="h-6 w-6 text-white" />
+        </button>
       )}
     </div>
   )
