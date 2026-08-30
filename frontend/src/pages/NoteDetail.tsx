@@ -215,7 +215,7 @@ export default function NoteDetail() {
 
   if (error || !note) {
     return (
-      <div className="screen-shell home-void">
+      <div className="screen-shell home-void void-readable">
         <Card className="max-w-md mx-auto text-center py-12">
           <p className="text-rose-400 mb-4">{error || 'Note not found'}</p>
           <Button onClick={() => navigate('/notes')}>Back to Notes</Button>
@@ -233,7 +233,7 @@ export default function NoteDetail() {
   const visualizationIsActivelyGenerating = isProcessing || !note.transcript
 
   return (
-    <div className="screen-shell home-void">
+    <div className="screen-shell home-void void-readable">
       <div className="screen-stack">
         {/* Back button - 48px touch target */}
         <button
@@ -450,7 +450,6 @@ export default function NoteDetail() {
               />
               {imageLoadFailed && (
                 <div className="px-6 text-center">
-                  <div className="empty-orbit" aria-hidden="true" />
                   <p className="text-sm text-rose-300">The visualization could not be loaded.</p>
                 </div>
               )}
@@ -463,10 +462,9 @@ export default function NoteDetail() {
               <span className="status-pill status-failed">Failed</span>
             </div>
             <div className="visual-frame aspect-square flex items-center justify-center px-6 text-center">
-              <div>
-                <div className="empty-orbit" aria-hidden="true" />
-                <p className="text-sm text-muted">The note is ready, but its optional visualization could not be generated.</p>
-              </div>
+              <p className="text-sm text-muted">
+                The note is ready, but its optional visualization could not be generated.
+              </p>
             </div>
           </Card>
         ) : shouldShowVisualizationState && (
@@ -478,17 +476,14 @@ export default function NoteDetail() {
               </span>
             </div>
             <div className="visual-frame aspect-square flex items-center justify-center">
-              <div className="text-center">
+              <div className="text-center px-6">
                 {visualizationIsActivelyGenerating ? (
                   <>
                     <Spinner label="Generating visualization..." className="flex justify-center mb-3" />
                     <p className="text-muted text-sm">Generating visualization...</p>
                   </>
                 ) : (
-                  <>
-                    <div className="empty-orbit" aria-hidden="true" />
-                    <p className="text-muted text-sm">Visualization pending</p>
-                  </>
+                  <p className="text-muted text-sm">Visualization pending</p>
                 )}
               </div>
             </div>

@@ -89,7 +89,7 @@ export default function NotesList() {
 
 
   return (
-    <div className="screen-shell home-void">
+    <div className="screen-shell home-void void-readable">
       <div className="screen-header">
         <h1 className="screen-title">Notes</h1>
       </div>
@@ -120,14 +120,13 @@ export default function NotesList() {
       {!loading && filteredNotes.length === 0 && (
         <div className="screen-stack">
           <Card className="text-center py-10 !p-4">
-            <div className="empty-orbit" aria-hidden="true" />
             <h3 className="text-white font-medium mb-2">
               {searchQuery ? 'No matching notes' : 'No notes yet'}
             </h3>
             <p className="text-muted text-sm">
               {searchQuery
                 ? 'Try a different search'
-                : 'Tap the mic to capture your first thought'}
+                : 'Open Capture to record your first note.'}
             </p>
           </Card>
         </div>

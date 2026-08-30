@@ -47,7 +47,26 @@ export default function Record() {
       source.connect(analyser)
       analyserRef.current = analyser
 
-      const mediaRecorder = new MediaRecorder(stream)
+      // Prefer a device-supported MIME type (Android WebView is not always webm).
+      const preferredTypes = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/ogg;codecs=opus',
+        'audio/ogg',
+        'audio/mp4',
+        'audio/aac',
+      ]
+      let mimeType = ''
+      for (const type of preferredTypes) {
+        if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(type)) {
+          mimeType = type
+          break
+        }
+      }
+
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream)
       mediaRecorderRef.current = mediaRecorder
       chunksRef.current = []
 
@@ -58,7 +77,8 @@ export default function Record() {
       }
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const blobType = mediaRecorder.mimeType || mimeType || 'audio/webm'
+        const blob = new Blob(chunksRef.current, { type: blobType })
         setAudioBlob(blob)
         stream.getTracks().forEach(track => track.stop())
       }
@@ -236,7 +256,7 @@ export default function Record() {
   }, [])
 
   return (
-    <div className="fixed inset-0 synapse-record-surface backdrop-blur-xl flex flex-col items-center justify-center px-6">
+    <div className="fixed inset-0 synapse-record-surface void-readable backdrop-blur-xl flex flex-col items-center justify-center px-6">
       {/* Error message */}
       {recordingError && (
         <div className="absolute top-6 left-6 right-6 bg-rose-500/20 border border-rose-500/40 rounded-2xl px-4 py-3 text-rose-300 text-sm text-center">
@@ -261,7 +281,7 @@ export default function Record() {
       )}
 
       <div className="record-stage">
-        <div className={`status-pill mx-auto mb-6 w-fit ${isRecording ? 'status-failed' : 'status-ready'}`}>
+        <div className={`status-pill mx-auto mb-6 w-fit ${isRecording ? 'status-recording' : 'status-ready'}`}>
           {isRecording ? 'Recording' : 'Captured'}
         </div>
 

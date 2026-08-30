@@ -26,6 +26,7 @@ Owns client app source, package configuration, UI, routing, and frontend build/t
 - Do not introduce new frameworks without approval.
 - Android Capacitor only for mobile chrome fixes in this tree: hardware/gesture Back is handled by `src/hooks/useAndroidBackButton.ts` (exit only from Home). Bottom tab `NavLink`s use `replace` so tab switches do not stack a back trap.
 - Non-Home screens that use `.home-void` / `.screen-shell` must stay single-column on phone widths (overflow-x contained; no sideways pan that can clip fixed `.bottom-nav`). Do not restyle Home when fixing other screens.
+- Non-Home void screens opt into `.void-readable` for brighter muted text and stronger glass borders on `#050505`. Home must not use `.void-readable`.
 
 ## Work Guidance
 

@@ -87,7 +87,7 @@ export default function Gallery() {
   const [featured, ...rest] = notes
 
   return (
-    <div className="screen-shell home-void">
+    <div className="screen-shell home-void void-readable">
       <div className="screen-header">
         <h1 className="screen-title">Gallery</h1>
       </div>
@@ -122,9 +122,10 @@ export default function Gallery() {
       {!loading && notes.length === 0 && (
         <div className="screen-stack">
           <Card className="text-center py-10 !p-4">
-            <div className="empty-orbit" aria-hidden="true" />
             <h3 className="text-white font-medium mb-2">No images yet</h3>
-            <p className="text-muted text-sm">Record a note and wait for its visualization to appear here</p>
+            <p className="text-muted text-sm">
+              Visualizations appear here after a note finishes processing.
+            </p>
           </Card>
         </div>
       )}

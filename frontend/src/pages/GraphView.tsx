@@ -538,7 +538,10 @@ export default function GraphView() {
   }, [workspace, fetchNotes])
 
   return (
-    <div className="relative h-[100dvh] w-full max-w-full overflow-hidden bg-base-dark">
+    <div
+      className="relative w-full max-w-full overflow-hidden bg-base-dark"
+      style={{ height: 'calc(100dvh - 5.5rem)' }}
+    >
       {/* Error */}
       {error && (
         <div className="absolute top-6 left-3 right-3 z-20 mx-auto max-w-sm">
@@ -573,6 +576,21 @@ export default function GraphView() {
         </div>
       )}
 
+      {/* Empty graph — keep 3D canvas mounted, overlay copy */}
+      {!loading && !error && noteCount === 0 && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center px-6 pointer-events-none">
+          <div
+            className="max-w-sm rounded-2xl border border-white/15 px-5 py-6 text-center"
+            style={{ background: 'rgba(10, 10, 15, 0.72)', backdropFilter: 'blur(14px)' }}
+          >
+            <h2 className="text-base font-semibold text-white">No notes in your graph yet</h2>
+            <p className="mt-2 text-sm leading-relaxed text-gray-300">
+              Capture a note from Home. When it finishes processing, it will appear here as a node.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Graph Container */}
       <div ref={containerRef} className="w-full h-full" />
 
@@ -588,9 +606,10 @@ export default function GraphView() {
         <span className="truncate text-sm font-medium">Back</span>
       </button>
 
-      {/* Legend — sit above bottom nav on phone */}
+      {/* Legend — above bottom nav; hide chrome noise when empty */}
+      {noteCount > 0 && (
       <div
-        className="absolute bottom-24 left-3 z-10 max-w-[min(18rem,calc(100%-1.5rem))] rounded-2xl border border-white/10 shadow-xl"
+        className="absolute bottom-4 left-3 z-10 max-w-[min(18rem,calc(100%-1.5rem))] rounded-2xl border border-white/10 shadow-xl"
         style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(16px)' }}
       >
         <button
@@ -653,6 +672,7 @@ export default function GraphView() {
           </div>
         )}
       </div>
+      )}
 
       {/* Stats badge */}
       {!loading && noteCount > 0 && (
