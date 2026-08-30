@@ -89,7 +89,7 @@ export default function NotesList() {
 
 
   return (
-    <div className="screen-shell">
+    <div className="screen-shell home-void">
       {/* Header */}
       <div className="screen-header">
         <div className="flex items-end justify-between gap-4">

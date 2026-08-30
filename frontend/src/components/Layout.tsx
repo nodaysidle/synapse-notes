@@ -7,7 +7,8 @@ export default function Layout() {
 
   // Hide nav during loading to prevent flicker
   const showNav = !loading && !!workspace
-  const isHome = location.pathname === '/'
+  // Graph keeps aurora-bg + body wash; all other Layout routes use void black.
+  const isGraph = location.pathname === '/graph'
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex min-w-[64px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all ${
@@ -15,7 +16,7 @@ export default function Layout() {
     }`
 
   return (
-    <div className={`min-h-screen${isHome ? ' layout-home' : ' aurora-bg'}`}>
+    <div className={`min-h-screen${isGraph ? ' aurora-bg' : ' layout-home'}`}>
       {/* Main content */}
       <main className={`${showNav ? 'pb-24' : ''}`}>
         <Outlet />

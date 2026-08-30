@@ -207,7 +207,7 @@ export default function NoteDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="home-void min-h-screen flex items-center justify-center">
         <Spinner label="Loading note..." />
       </div>
     )
@@ -215,7 +215,7 @@ export default function NoteDetail() {
 
   if (error || !note) {
     return (
-      <div className="screen-shell">
+      <div className="screen-shell home-void">
         <Card className="max-w-md mx-auto text-center py-12">
           <p className="text-rose-400 mb-4">{error || 'Note not found'}</p>
           <Button onClick={() => navigate('/notes')}>Back to Notes</Button>
@@ -233,7 +233,7 @@ export default function NoteDetail() {
   const visualizationIsActivelyGenerating = isProcessing || !note.transcript
 
   return (
-    <div className="screen-shell">
+    <div className="screen-shell home-void">
       <div className="max-w-2xl mx-auto">
         {/* Back button - 48px touch target */}
         <button

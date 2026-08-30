@@ -87,7 +87,7 @@ export default function Gallery() {
   const [featured, ...rest] = notes
 
   return (
-    <div className="screen-shell px-5">
+    <div className="screen-shell home-void px-5">
       <div className="screen-header max-w-3xl">
         <div className="flex items-end justify-between gap-4">
           <div>
