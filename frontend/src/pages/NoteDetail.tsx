@@ -20,7 +20,7 @@ function statusClass(status: string) {
 function statusLabel(status: string) {
   if (status === 'completed') return 'Ready'
   if (status === 'failed') return 'Failed'
-  if (status === 'processing') return 'Processing'
+  if (status === 'processing') return 'Live'
   return 'Queued'
 }
 
