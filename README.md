@@ -5,7 +5,7 @@
 <h1 align="center">Synapse Notes</h1>
 
 <p align="center">
-  Speak → transcript → embedding → AI image → 3D graph.<br>
+  Speak → transcript → embedding → AI image → graph visualization.<br>
   One tap on the mic starts that journey.
 </p>
 
@@ -28,7 +28,7 @@
 
 ## The journey
 
-Synapse Notes exists for one path: spoken words become a note you can see in a graph.
+Synapse Notes exists for one path: spoken words become a note you can open in a graph.
 
 ```text
 Spoken words
@@ -37,11 +37,13 @@ Spoken words
        title = first sentence of the transcript
   → OpenRouter embedding (768-d, stored on the note)
   → OpenRouter AI image (optional companion visual)
-  → note lands on Home
-  → Graph: 3D visualization of your notes
+  → note lands on Home   ← capture pipeline ends here
+
+Open Graph (nav): 3D visualization of your notes.
+  Edges appear only when two notes share ≥2 keywords.
 ```
 
-That pipeline is the product. Everything else is how you watch it run and recover when it stalls.
+Speak → transcribe → embed → image is the automatic capture pipeline. Graph visualization is the product story’s destination — a **screen you open**, not a final pipeline stage that every note runs through.
 
 | Stage | What happens |
 |---|---|
@@ -49,9 +51,11 @@ That pipeline is the product. Everything else is how you watch it run and recove
 | **Transcribe** | OpenRouter turns speech into text. Title = first sentence. |
 | **Embed** | A 768-d vector is stored with the note (used later for similar-notes on detail). |
 | **Image** | An optional AI image is generated and stored. Failure here does **not** drop the note. |
-| **Graph** | The journey ends in a Three.js 3D graph of your notes. Links today are **shared keywords** (≥2), not embedding edges / `match_notes`. |
+| **Home** | Pipeline ends: the note shows up under the mic (last **5** notes). |
 
-Statuses while the pipeline runs: **Queued** → **Processing** → **Ready**, or **Failed**. Retry reuses the stored audio — no re-record required. Images can be saved to `Pictures/Synapse Notes` on the phone.
+**Graph (screen):** Open anytime from nav. Three.js 3D view; links today are **shared keywords** (≥2), not embedding edges / `match_notes`. A note with no keyword overlap appears as an isolated node.
+
+Statuses while the pipeline runs: Home shows **Queued** → **Live** → **Ready**, or **Failed**. Note detail uses **Processing** (not Live) for the in-flight state. Retry reuses the stored audio — no re-record required. Images can be saved to `Pictures/Synapse Notes` on the phone.
 
 Android only (`com.synapse.notes`). Debug APK sideload — no iOS, no Play Store. First launch: anonymous auth and an auto-created **My Notes** space. No join or workspace onboarding.
 
@@ -59,12 +63,12 @@ Android only (`com.synapse.notes`). Debug APK sideload — no iOS, no Play Store
 
 | Screen | Role in the journey |
 |---|---|
-| **Home** | Start: void black, centered muted-green mic, header “Synapse Notes”. Notes list under the mic when notes exist. |
+| **Home** | Start: void black, centered muted-green mic, header “Synapse Notes”. Lists the last **5** notes under the mic (status **Live** while in flight). |
 | **Record** | Capture the spoken words that enter the pipeline. |
-| **Note detail** | Watch status, read transcript, retry, view image. Optional **similar notes** via the `semantic-search` Edge Function (embeddings). |
+| **Note detail** | Watch status (**Processing** while in flight), read transcript, retry, view image. Optional **similar notes** via the `semantic-search` Edge Function (embeddings). |
 | **Gallery** | Browse generated images; save to device gallery. |
-| **Graph** | End of the journey: 3D note visualization (keyword links, not embedding edges). |
-| **Notes** | Full list; filter is substring `includes()` on title / transcript / content — not semantic search. |
+| **Graph** | Screen you open: 3D note visualization (keyword links ≥2, not embedding edges). |
+| **Notes** | Full list (`/notes`); empty copy is “No notes yet.” Filter is substring `includes()` on title / transcript / **content** — not semantic search. |
 
 **Not in the UI:** `ask-notes` (Edge Function exists; no screen calls it). Embeddings are stored; the list filter and graph edges do not use them yet. Similar-notes on detail does.
 
@@ -75,7 +79,7 @@ All of the journey’s AI steps run in Supabase Edge Functions. The OpenRouter k
 | Step in the journey | Primary | Fallback |
 |---|---|---|
 | Transcribe | `openai/gpt-4o-mini-transcribe` | `openai/whisper-large-v3`, `google/chirp-3` |
-| Embed | `google/gemini-embedding-001` (768-d) | same model via provider routing |
+| Embed | `google/gemini-embedding-001` (768-d) | — (single model; no fallback in repo) |
 | AI image | `krea/krea-2-medium-turbo` | `google/gemini-3.1-flash-lite-image` |
 | Ask notes (no UI) | `openai/gpt-5.6-luna` | `google/gemini-2.5-flash-lite` |
 
