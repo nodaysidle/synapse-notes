@@ -5,8 +5,8 @@
 <h1 align="center">Synapse Notes</h1>
 
 <p align="center">
-  Speak → transcript → embedding → AI image → graph visualization.<br>
-  One tap on the mic starts that journey.
+  Speak → transcript → embedding → AI image → Home.<br>
+  One tap on the mic starts it. Open Graph next — keyword edges only.
 </p>
 
 <p align="center">
