@@ -5,7 +5,8 @@
 <h1 align="center">Synapse Notes</h1>
 
 <p align="center">
-  Voice notes on Android. Tap the mic, get a transcript, optional image, and a keyword graph.
+  Speak → transcript → embedding → AI image → 3D graph.<br>
+  One tap on the mic starts that journey.
 </p>
 
 <p align="center">
@@ -25,48 +26,57 @@
   <img alt="License" src="https://img.shields.io/badge/License-MIT-F0F0F5?style=flat-square">
 </p>
 
-## What it does
+## The journey
 
-Synapse Notes is a voice-first Android app (`com.synapse.notes`). You record a thought; the backend stores the audio, transcribes it, embeds it, and may generate an image. Notes land on Home. There is no iOS build and no Play Store listing — current releases are debug APKs for sideload only.
-
-On first launch the app signs in anonymously and creates a personal **My Notes** workspace. There is no join screen or multi-user onboarding.
-
-## How a note is made
+Synapse Notes exists for one path: spoken words become a note you can see in a graph.
 
 ```text
-Tap mic
-  → audio → Supabase Storage
-  → OpenRouter transcription  (+ title = first sentence of transcript)
-  ├─→ OpenRouter embedding (768-d, stored)
-  └─→ OpenRouter image (optional) → Supabase Storage → Gallery
-  → note appears on Home
+Spoken words
+  → mic capture → Supabase Storage
+  → OpenRouter transcription
+       title = first sentence of the transcript
+  → OpenRouter embedding (768-d, stored on the note)
+  → OpenRouter AI image (optional companion visual)
+  → note lands on Home
+  → Graph: 3D visualization of your notes
 ```
 
-Statuses: **Queued** → **Processing** → **Ready**, or **Failed**. Failed or stuck notes can retry from the stored audio. Image failure does not drop a valid transcript. Generated images can be saved to `Pictures/Synapse Notes` on the device.
+That pipeline is the product. Everything else is how you watch it run and recover when it stalls.
+
+| Stage | What happens |
+|---|---|
+| **Speak** | Tap the muted-green mic. Audio uploads to Supabase Storage. |
+| **Transcribe** | OpenRouter turns speech into text. Title = first sentence. |
+| **Embed** | A 768-d vector is stored with the note (used later for similar-notes on detail). |
+| **Image** | An optional AI image is generated and stored. Failure here does **not** drop the note. |
+| **Graph** | The journey ends in a Three.js 3D graph of your notes. Links today are **shared keywords** (≥2), not embedding edges / `match_notes`. |
+
+Statuses while the pipeline runs: **Queued** → **Processing** → **Ready**, or **Failed**. Retry reuses the stored audio — no re-record required. Images can be saved to `Pictures/Synapse Notes` on the phone.
+
+Android only (`com.synapse.notes`). Debug APK sideload — no iOS, no Play Store. First launch: anonymous auth and an auto-created **My Notes** space. No join or workspace onboarding.
 
 ## What’s on screen (v0.4.1)
 
-| Screen | What you get |
+| Screen | Role in the journey |
 |---|---|
-| **Home** | Void black, muted green mic centered, header “Synapse Notes”. Recent notes list under the mic when notes exist. |
-| **Notes** | Full list with substring search (`includes()` on title / transcript / content). Not semantic search. |
-| **Gallery** | Generated images; save to the phone gallery. |
-| **Graph** | Three.js view; edges from shared keywords (≥2). Not embedding edges / `match_notes`. |
-| **Note detail** | Transcript, status, retry, image; optional “similar notes” via the `semantic-search` Edge Function. |
+| **Home** | Start: void black, centered muted-green mic, header “Synapse Notes”. Notes list under the mic when notes exist. |
+| **Record** | Capture the spoken words that enter the pipeline. |
+| **Note detail** | Watch status, read transcript, retry, view image. Optional **similar notes** via the `semantic-search` Edge Function (embeddings). |
+| **Gallery** | Browse generated images; save to device gallery. |
+| **Graph** | End of the journey: 3D note visualization (keyword links, not embedding edges). |
+| **Notes** | Full list; filter is substring `includes()` on title / transcript / content — not semantic search. |
 
-**Not in the UI:** `ask-notes` question answering (Edge Function exists; no screen calls it).
-
-Embeddings are generated and stored. The notes list filter and the graph do not use them yet.
+**Not in the UI:** `ask-notes` (Edge Function exists; no screen calls it). Embeddings are stored; the list filter and graph edges do not use them yet. Similar-notes on detail does.
 
 ## Models (OpenRouter)
 
-AI runs in Supabase Edge Functions. The OpenRouter key is never shipped in the APK.
+All of the journey’s AI steps run in Supabase Edge Functions. The OpenRouter key is never in the APK.
 
-| Capability | Primary | Fallback |
+| Step in the journey | Primary | Fallback |
 |---|---|---|
-| Transcription | `openai/gpt-4o-mini-transcribe` | `openai/whisper-large-v3`, `google/chirp-3` |
-| Embeddings | `google/gemini-embedding-001` (768-d) | same model via provider routing |
-| Image | `krea/krea-2-medium-turbo` | `google/gemini-3.1-flash-lite-image` |
+| Transcribe | `openai/gpt-4o-mini-transcribe` | `openai/whisper-large-v3`, `google/chirp-3` |
+| Embed | `google/gemini-embedding-001` (768-d) | same model via provider routing |
+| AI image | `krea/krea-2-medium-turbo` | `google/gemini-3.1-flash-lite-image` |
 | Ask notes (no UI) | `openai/gpt-5.6-luna` | `google/gemini-2.5-flash-lite` |
 
 Overrides: [`supabase/.env.example`](supabase/.env.example). Keep embeddings at 768 dimensions unless you migrate the schema and re-embed every note.
@@ -83,9 +93,11 @@ Overrides: [`supabase/.env.example`](supabase/.env.example). Keep embeddings at 
 
 ## Install the APK
 
+The APK is how you walk the journey on a phone.
+
 1. Download [`synapse-notes-0.4.1-debug.apk`](https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.1/synapse-notes-0.4.1-debug.apk) from the [v0.4.1 release](https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.1).
 2. Sideload on Android 24+. Allow install from unknown sources for your file manager/browser.
-3. This is a **debug-signed** build for testing, not a Play Store release.
+3. Debug-signed testing build — not a Play Store release.
 
 Sideloaded and used on a **Xiaomi M2007J3SY**.
 
