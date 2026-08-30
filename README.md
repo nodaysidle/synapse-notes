@@ -10,16 +10,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.1/synapse-notes-0.4.1-debug.apk"><strong>Download v0.4.1 debug APK</strong></a>
+  <a href="https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.3/synapse-notes-0.4.3-debug.apk"><strong>Download v0.4.3 debug APK</strong></a>
   ·
-  <a href="https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.1">v0.4.1 release</a>
+  <a href="https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.3">v0.4.3 release</a>
   ·
   <a href="https://github.com/nodaysidle/synapse-notes/releases">All releases</a>
 </p>
 
 <p align="center">
   <img alt="Android" src="https://img.shields.io/badge/Android-24%2B-C8FF00?style=flat-square&logo=android&logoColor=0A0A0F">
-  <img alt="Version" src="https://img.shields.io/badge/v0.4.1-debug-6B6B80?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/v0.4.3-debug-6B6B80?style=flat-square">
   <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black">
   <img alt="Supabase" src="https://img.shields.io/badge/Backend-Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white">
   <img alt="OpenRouter" src="https://img.shields.io/badge/AI-OpenRouter-6467F2?style=flat-square">
@@ -55,20 +55,22 @@ Speak → transcribe → embed → image is the automatic capture pipeline. Grap
 
 **Graph (screen):** Open anytime from nav. Three.js 3D view; links today are **shared keywords** (≥2), not embedding edges / `match_notes`. A note with no keyword overlap appears as an isolated node.
 
-Statuses while the pipeline runs: Home shows **Queued** → **Live** → **Ready**, or **Failed**. Note detail uses **Processing** (not Live) for the in-flight state. Retry reuses the stored audio — no re-record required. Images can be saved to `Pictures/Synapse Notes` on the phone.
+Statuses while the pipeline runs: Home, Notes, and note detail show **Queued** → **Live** → **Ready**, or **Failed**. Retry reuses the stored audio — no re-record required. Images can be saved to `Pictures/Synapse Notes` on the phone.
 
 Android only (`com.synapse.notes`). Debug APK sideload — no iOS, no Play Store. First launch: anonymous auth and an auto-created **My Notes** space. No join or workspace onboarding.
 
-## What’s on screen (v0.4.1)
+## What’s on screen (v0.4.3)
+
+Phone-tested on a **Xiaomi M2007J3SY** (Android 12). Notes and Gallery are compact single-column layouts (no sideways scroll). Bottom nav (**Capture** / **Notes** / **Gallery** / **Graph**) stays visible and tappable. Android Back pops in-app history and only exits the app from Home; the Capture tab stays `/` (Home).
 
 | Screen | Role in the journey |
 |---|---|
-| **Home** | Start: void black, centered muted-green mic, header “Synapse Notes”. Lists the last **5** notes under the mic (status **Live** while in flight). |
+| **Home** | Start: void black, centered muted-green mic, header “Synapse Notes”. Lists the last **5** notes under the mic (status **Live** while in flight). Unchanged in v0.4.3. |
 | **Record** | Capture the spoken words that enter the pipeline. |
-| **Note detail** | Watch status (**Processing** while in flight), read transcript, retry, view image. Optional **similar notes** via the `semantic-search` Edge Function (embeddings). |
-| **Gallery** | Browse generated images; save to device gallery. |
+| **Note detail** | Watch status (**Live** while in flight), read transcript, retry, view image. Optional **similar notes** via the `semantic-search` Edge Function (embeddings). |
+| **Gallery** | Browse generated images in a compact single-column layout; save to device gallery. |
 | **Graph** | Screen you open: 3D note visualization (keyword links ≥2, not embedding edges). |
-| **Notes** | Full list (`/notes`); empty copy is “No notes yet.” Filter is substring `includes()` on title / transcript / **content** — not semantic search. |
+| **Notes** | Full list (`/notes`) in a compact single-column layout; empty copy is “No notes yet.” Filter is substring `includes()` on title / transcript / **content** — not semantic search. |
 
 **Not in the UI:** `ask-notes` (Edge Function exists; no screen calls it). Embeddings are stored; the list filter and graph edges do not use them yet. Similar-notes on detail does.
 
@@ -99,11 +101,11 @@ Overrides: [`supabase/.env.example`](supabase/.env.example). Keep embeddings at 
 
 The APK is how you walk the journey on a phone.
 
-1. Download [`synapse-notes-0.4.1-debug.apk`](https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.1/synapse-notes-0.4.1-debug.apk) from the [v0.4.1 release](https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.1).
+1. Download [`synapse-notes-0.4.3-debug.apk`](https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.3/synapse-notes-0.4.3-debug.apk) from the [v0.4.3 release](https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.3).
 2. Sideload on Android 24+. Allow install from unknown sources for your file manager/browser.
 3. Debug-signed testing build — not a Play Store release.
 
-Sideloaded and used on a **Xiaomi M2007J3SY**.
+Sideloaded and phone-tested on a **Xiaomi M2007J3SY** (Android 12).
 
 ## Run locally
 
