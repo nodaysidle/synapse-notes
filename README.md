@@ -37,7 +37,7 @@ The Android experience is built around fast capture and transparent recovery: pr
 - **AI visualization gallery** with native Android downloads into `Pictures/Synapse Notes`.
 - **Semantic search and related notes** backed by 768-dimensional pgvector embeddings.
 - **Interactive 3D knowledge graph** powered by Three.js.
-- **Workspace-first onboarding** without requiring a traditional account-creation flow.
+- **Tap mic, notes show up** — the app signs in anonymously and auto-creates a personal notes space; there is no join step.
 
 ## How a note moves through Synapse
 
