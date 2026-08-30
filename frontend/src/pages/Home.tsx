@@ -80,69 +80,59 @@ export default function Home() {
     navigate('/record')
   }
 
+  const hasNotes = recentNotes.length > 0
+
   return (
-    <div className="screen-shell">
-      <div className="screen-header">
-        <div className="flex items-baseline justify-between gap-4">
-          <h1 className="screen-title">Notes</h1>
-          {recentNotes.length > 0 && (
-            <button
-              type="button"
-              onClick={() => navigate('/notes')}
-              className="text-sm text-muted transition-colors hover:text-white"
-            >
-              View all
-            </button>
-          )}
-        </div>
+    <div className="screen-shell home-void">
+      <div className="screen-header home-header">
+        <h1 className="screen-title home-title">Synapse Notes</h1>
+        {hasNotes && (
+          <button
+            type="button"
+            onClick={() => navigate('/notes')}
+            className="home-view-all text-sm text-muted transition-colors hover:text-white"
+          >
+            View all
+          </button>
+        )}
       </div>
 
-      {recentNotes.length === 0 ? (
-        <div className="mx-auto flex max-w-md flex-col items-center justify-center py-16 text-center">
-          <p className="mb-8 text-sm text-muted">No notes yet</p>
+      <div className={`home-stage${hasNotes ? ' home-stage--with-notes' : ''}`}>
+        <div className="home-mic-slot">
           <button type="button" onClick={handleMicClick} className="btn-mic" aria-label="Start recording">
-            <MicIcon className="h-7 w-7 text-white" />
+            <MicIcon className="h-8 w-8 text-white" />
           </button>
         </div>
-      ) : (
-        <div className="mx-auto max-w-md space-y-3">
-          {recentNotes.map((note) => (
-            <Card
-              key={note.id}
-              variant="interactive"
-              onClick={() => navigate(`/notes/${note.id}`)}
-              className="flex items-center gap-4"
-            >
-              <div className="note-thumb">
-                {note.image_url && <img src={note.image_url} alt="" loading="lazy" />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="mb-1 flex items-center gap-2">
-                  <h3 className="min-w-0 truncate text-sm font-semibold text-white">{note.title}</h3>
-                  <span className={`status-pill ${statusClass(note.embedding_status)} shrink-0`}>
-                    {statusLabel(note.embedding_status)}
-                  </span>
-                </div>
-                <p className="truncate text-sm text-muted">
-                  {note.transcript?.slice(0, 60) || note.content?.slice(0, 60) || 'No content'}
-                </p>
-              </div>
-              <span className="whitespace-nowrap text-xs text-muted">{formatDateShort(note.created_at)}</span>
-            </Card>
-          ))}
-        </div>
-      )}
 
-      {recentNotes.length > 0 && (
-        <button
-          type="button"
-          onClick={handleMicClick}
-          className="btn-mic btn-mic-fab"
-          aria-label="Start recording"
-        >
-          <MicIcon className="h-6 w-6 text-white" />
-        </button>
-      )}
+        {hasNotes && (
+          <div className="home-notes mx-auto w-full max-w-md space-y-3">
+            {recentNotes.map((note) => (
+              <Card
+                key={note.id}
+                variant="interactive"
+                onClick={() => navigate(`/notes/${note.id}`)}
+                className="flex items-center gap-4"
+              >
+                <div className="note-thumb">
+                  {note.image_url && <img src={note.image_url} alt="" loading="lazy" />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <h3 className="min-w-0 truncate text-sm font-semibold text-white">{note.title}</h3>
+                    <span className={`status-pill ${statusClass(note.embedding_status)} shrink-0`}>
+                      {statusLabel(note.embedding_status)}
+                    </span>
+                  </div>
+                  <p className="truncate text-sm text-muted">
+                    {note.transcript?.slice(0, 60) || note.content?.slice(0, 60) || 'No content'}
+                  </p>
+                </div>
+                <span className="whitespace-nowrap text-xs text-muted">{formatDateShort(note.created_at)}</span>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

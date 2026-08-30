@@ -1,19 +1,21 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { useWorkspace } from '../contexts/WorkspaceContext'
 
 export default function Layout() {
+  const location = useLocation()
   const { workspace, loading } = useWorkspace()
 
   // Hide nav during loading to prevent flicker
   const showNav = !loading && !!workspace
+  const isHome = location.pathname === '/'
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex min-w-[64px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all ${
-      isActive ? 'bg-accent/10 text-accent shadow-[0_0_24px_rgba(200,255,0,0.12)]' : 'text-slate-400 hover:text-white'
+      isActive ? 'bg-accent/10 text-accent' : 'text-slate-400 hover:text-white'
     }`
 
   return (
-    <div className="min-h-screen aurora-bg">
+    <div className={`min-h-screen${isHome ? ' layout-home' : ' aurora-bg'}`}>
       {/* Main content */}
       <main className={`${showNav ? 'pb-24' : ''}`}>
         <Outlet />
