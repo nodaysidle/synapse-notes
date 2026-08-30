@@ -86,41 +86,21 @@
            hover:scale-105 active:scale-95;
   }
 
+  /* Compact capture control — tool, not marketing hero */
   .btn-mic {
-    @apply w-24 h-24 rounded-full flex items-center justify-center
-           hover:scale-105 active:scale-95
-           transition-transform duration-200;
-    position: relative;
+    @apply flex h-14 w-14 items-center justify-center rounded-full
+           transition-transform duration-150 hover:scale-105 active:scale-95;
     background: #14141F;
-    border: 1px solid rgba(200, 255, 0, 0.28);
-    box-shadow:
-      0 0 0 10px rgba(200, 255, 0, 0.04),
-      0 22px 60px rgba(200, 255, 0, 0.12),
-      inset 0 0 22px rgba(200, 255, 0, 0.10);
-    overflow: hidden;
+    border: 1px solid rgba(200, 255, 0, 0.22);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
-  .btn-mic::before {
-    content: '';
-    position: absolute;
-    inset: -20%;
-    background: repeating-conic-gradient(from 10deg, #C8FF00 0 10deg, #F0F0F5 10deg 17deg, transparent 17deg 32deg);
-    opacity: 0.22;
-    animation: slow-spin 12s linear infinite;
-  }
-
-  .btn-mic::after {
-    content: '';
-    position: absolute;
-    inset: 9px;
-    border-radius: 9999px;
-    background: #0A0A0F;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .btn-mic svg {
-    position: relative;
-    z-index: 1;
+  .btn-mic-fab {
+    position: fixed;
+    right: 1.25rem;
+    bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+    z-index: 40;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
   }
 
   .btn-mic-recording {
@@ -172,17 +152,18 @@
   }
 
   .screen-title {
-    @apply text-3xl font-bold tracking-tight text-white;
+    @apply text-2xl font-semibold tracking-tight text-white;
   }
 
   .screen-subtitle {
-    @apply mt-2 text-sm leading-relaxed text-[#6B6B80];
+    @apply mt-1.5 text-sm leading-relaxed text-[#6B6B80];
   }
 
+  /* Unused by Home after notes-first redesign; kept for any residual refs */
   .stat-strip {
     @apply grid grid-cols-3 gap-2 rounded-2xl p-2;
     background: rgba(5, 7, 10, 0.46);
-    border: 1px solid rgba(200, 255, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .stat-cell {
@@ -321,42 +302,20 @@
     opacity: 0.55;
   }
 
+  /* Unused by Home after notes-first redesign; kept for any residual refs */
   .synapse-emblem {
     position: relative;
-    width: 88px;
-    height: 88px;
+    width: 56px;
+    height: 56px;
     margin-inline: auto;
     border-radius: 9999px;
-    border: 1px solid rgba(200, 255, 0, 0.22);
-    background:
-      linear-gradient(145deg, rgba(200, 255, 0, 0.12), transparent 52%),
-      #0A0A0F;
-    box-shadow: 0 18px 55px rgba(200, 255, 0, 0.10), inset 0 0 30px rgba(107, 107, 128, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: #0A0A0F;
   }
 
   .synapse-emblem::before,
   .synapse-emblem::after {
-    content: '';
-    position: absolute;
-    border-radius: 9999px;
-  }
-
-  .synapse-emblem::before {
-    inset: 18px;
-    border: 1px solid rgba(200, 255, 0, 0.36);
-    box-shadow:
-      18px -8px 0 -7px #C8FF00,
-      -13px 16px 0 -8px #F0F0F5,
-      14px 18px 0 -8px #6B6B80;
-  }
-
-  .synapse-emblem::after {
-    inset: 38px;
-    background: #C8FF00;
-    box-shadow:
-      -22px -13px 0 -2px #F0F0F5,
-      22px -4px 0 -3px #6B6B80,
-      4px 24px 0 -4px #F0F0F5;
+    content: none;
   }
 
   .synapse-record-surface {
@@ -370,10 +329,6 @@
     background: rgba(10, 10, 15, 0.88);
     border-top: 1px solid rgba(200, 255, 0, 0.12);
     box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.32);
-  }
-
-  @keyframes slow-spin {
-    to { transform: rotate(360deg); }
   }
 
   .scrollbar-hide {
