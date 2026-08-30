@@ -89,7 +89,7 @@ export default function NotesList() {
 
 
   return (
-    <div className="screen-shell home-void void-readable">
+    <div className="screen-shell screen-void void-readable">
       <div className="screen-header">
         <h1 className="screen-title">Notes</h1>
       </div>

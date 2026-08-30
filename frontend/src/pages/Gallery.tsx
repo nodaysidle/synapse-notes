@@ -87,7 +87,7 @@ export default function Gallery() {
   const [featured, ...rest] = notes
 
   return (
-    <div className="screen-shell home-void void-readable">
+    <div className="screen-shell screen-void void-readable">
       <div className="screen-header">
         <h1 className="screen-title">Gallery</h1>
       </div>
