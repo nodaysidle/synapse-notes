@@ -16,15 +16,21 @@ export default function Layout() {
     }`
 
   return (
-    <div className={`layout-shell min-h-screen${isGraph ? ' aurora-bg' : ' layout-home'}`}>
-      {/* Main content */}
-      <main className={`min-w-0 max-w-full overflow-x-hidden ${showNav ? 'pb-24' : ''}`}>
-        <Outlet />
-      </main>
+    <>
+      {/*
+        Keep overflow clipping on main/content only. Do NOT put overflow-x on a
+        wrapper that also contains the bottom nav — Android WebView can clip
+        position:fixed descendants of overflow containers (the Notes trap).
+      */}
+      <div className={`layout-shell min-h-screen${isGraph ? ' aurora-bg' : ' layout-home'}`}>
+        <main className={`min-w-0 max-w-full overflow-x-clip ${showNav ? 'pb-24' : ''}`}>
+          <Outlet />
+        </main>
+      </div>
 
-      {/* Bottom navigation — replace keeps tab switches from stacking a back trap */}
+      {/* Bottom nav is a viewport sibling — always visible above system buttons */}
       {showNav && (
-        <nav className="bottom-nav px-3 pt-3 safe-area-pb">
+        <nav className="bottom-nav px-3 pt-3 safe-area-pb" aria-label="Primary">
           <div className="mx-auto flex w-full max-w-md items-center justify-between gap-1">
             <NavLink to="/" end replace className={navLinkClass}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -59,6 +65,6 @@ export default function Layout() {
           </div>
         </nav>
       )}
-    </div>
+    </>
   )
 }

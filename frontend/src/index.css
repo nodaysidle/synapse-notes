@@ -16,6 +16,7 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
@@ -28,6 +29,7 @@
     background-size: 180px 180px, 36px 36px, 36px 36px;
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-x: clip;
     overscroll-behavior-x: none;
   }
 }
@@ -189,6 +191,7 @@
     min-width: 0;
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-x: clip;
     padding: calc(env(safe-area-inset-top) + 1.25rem) 1rem calc(env(safe-area-inset-bottom) + 7.75rem);
   }
 
@@ -483,16 +486,20 @@
   }
 
   .bottom-nav {
+    /* Pin to the visual viewport — never nest inside an overflow-x clipper */
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 50;
-    width: 100%;
-    max-width: 100%;
-    background: rgba(5, 5, 5, 0.94);
+    z-index: 100;
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    background: rgba(5, 5, 5, 0.96);
     border-top: 1px solid rgba(168, 196, 48, 0.14);
     box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.45);
+    /* Survive horizontal document quirks on Android WebView */
+    transform: translateZ(0);
   }
 
   .layout-home .bottom-nav {
@@ -501,14 +508,15 @@
   }
 
   .safe-area-pb {
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
   }
 
   .layout-shell {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    /* No overflow-x here — clipping the shell also clips a nested fixed nav
+       on some Android WebViews. Content overflow is handled on main / screens. */
   }
 
   .scrollbar-hide {
