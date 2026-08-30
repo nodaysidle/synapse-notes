@@ -1,12 +1,11 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router-dom'
 import { useWorkspace } from '../contexts/WorkspaceContext'
 
 export default function Layout() {
-  const location = useLocation()
   const { workspace, loading } = useWorkspace()
 
-  // Hide nav on workspace setup pages and during loading to prevent flicker
-  const showNav = !loading && workspace && !location.pathname.startsWith('/setup')
+  // Hide nav during loading to prevent flicker
+  const showNav = !loading && !!workspace
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex min-w-[64px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all ${

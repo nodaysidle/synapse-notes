@@ -13,9 +13,6 @@ Route-level views. Each page owns its own data-fetching, local state, and layout
 | `Gallery` | `/gallery` | Grid of AI-generated note images with date labels and device-save shortcuts |
 | `GraphView` | `/graph` | Interactive Three.js 3D force-directed graph of note connections |
 | `Record` | `/record` | Full-screen recorder; uses `useAudioRecorder` directly, uploads blob, triggers `processNote()` |
-| `WorkspaceSetup` | `/setup` | Auto signs in anonymously, routes to Create or Join workspace |
-| `CreateWorkspace` | `/setup/create` | Creates workspace, displays shareable invite code |
-| `JoinWorkspace` | `/setup/join` | Joins existing workspace by invite code + display name |
 
 ## Design Patterns
 - **Data fetching**: `useEffect` + `supabase.from(…).select(…)` directly in pages (no dedicated query layer).

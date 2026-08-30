@@ -7,9 +7,6 @@ interface WorkspaceContextType {
   workspace: Workspace | null
   members: WorkspaceMember[]
   loading: boolean
-  createWorkspace: (name: string) => Promise<Workspace>
-  joinWorkspace: (inviteCode: string, displayName: string) => Promise<void>
-  leaveWorkspace: () => Promise<void>
 }
 
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined)
@@ -123,64 +120,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     }
   }, [workspace])
 
-  const createWorkspace = async (name: string): Promise<Workspace> => {
-    if (!user) throw new Error('Must be logged in')
-
-    const code = `SYNAPSE-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
-    const { data: rows, error: wsError } = await supabase.rpc('create_workspace_with_member', {
-      workspace_name: name,
-      invite_code_param: code,
-      display_name_param: 'Owner',
-    })
-
-    if (wsError || !rows?.length) throw wsError
-    const ws = rows[0] as Workspace
-
-    setWorkspace(ws)
-    return ws
-  }
-
-  const joinWorkspace = async (inviteCode: string, displayName: string) => {
-    if (!user) throw new Error('Must be logged in')
-
-    // get_workspace_by_invite_code() is SECURITY DEFINER — allows a non-member
-    // to look up a workspace before they have joined it.
-    const { data: rows, error: wsError } = await supabase
-      .rpc('get_workspace_by_invite_code', { invite_code_param: inviteCode })
-
-    if (wsError || !rows?.length) throw new Error('Invalid invite code')
-    const ws = rows[0] as Workspace
-
-    const { error: joinError } = await supabase
-      .from('workspace_members')
-      .insert({
-        workspace_id: ws.id,
-        user_id: user.id,
-        display_name: displayName,
-      })
-
-    if (joinError) throw joinError
-
-    setWorkspace(ws)
-  }
-
-  const leaveWorkspace = async () => {
-    if (!user || !workspace) return
-
-    // leave_workspace() RPC atomically removes the member and deletes the workspace
-    // if the caller was the last member, preventing orphaned workspace rows.
-    const { error } = await supabase.rpc('leave_workspace', {
-      workspace_id_param: workspace.id,
-    })
-    if (error) throw error
-
-    setWorkspace(null)
-    setMembers([])
-  }
-
   return (
     <WorkspaceContext.Provider
-      value={{ workspace, members, loading, createWorkspace, joinWorkspace, leaveWorkspace }}
+      value={{ workspace, members, loading }}
     >
       {children}
     </WorkspaceContext.Provider>
