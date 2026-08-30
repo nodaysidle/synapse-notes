@@ -234,12 +234,12 @@ export default function NoteDetail() {
 
   return (
     <div className="screen-shell home-void">
-      <div className="max-w-2xl mx-auto">
+      <div className="screen-stack">
         {/* Back button - 48px touch target */}
         <button
-          onClick={() => navigate('/notes')}
-          className="flex items-center gap-2 text-muted hover:text-white mb-6 transition-colors min-h-[48px] px-2 -ml-2 rounded-xl active:bg-white/5"
-          aria-label="Back to notes list"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-muted hover:text-white mb-4 transition-colors min-h-[48px] px-2 -ml-2 rounded-xl active:bg-white/5"
+          aria-label="Go back"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -248,35 +248,45 @@ export default function NoteDetail() {
         </button>
 
         {/* Main Card */}
-        <Card className="mb-6">
+        <Card className="mb-4 !p-4">
           {/* Header */}
-          <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="mb-3 flex min-w-0 flex-col gap-2">
             {isEditing ? (
               <Input
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="flex-1 text-xl font-bold"
+                className="w-full text-lg font-bold"
                 placeholder="Note title"
               />
             ) : (
-              <h1 className="text-2xl font-bold leading-tight text-white">{note.title}</h1>
+              <h1 className="text-xl font-bold leading-tight text-white break-words">{note.title}</h1>
             )}
             {!isEditing && (
-              <span className={`status-pill ${statusClass(note.embedding_status)} shrink-0`}>
-                {statusLabel(note.embedding_status)}
-              </span>
+              <div className="note-row-meta">
+                <span className={`status-pill ${statusClass(note.embedding_status)}`}>
+                  {statusLabel(note.embedding_status)}
+                </span>
+                <span className="text-xs text-muted">{formatDateLong(note.created_at)}</span>
+                {note.duration && (
+                  <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] text-accent">
+                    {formatDuration(note.duration)}
+                  </span>
+                )}
+              </div>
             )}
           </div>
 
-          {/* Metadata */}
-          <div className="flex items-center gap-4 text-sm text-muted mb-6 flex-wrap">
-            <span>{formatDateLong(note.created_at)}</span>
-            {note.duration && (
-              <span className="rounded-full bg-accent/15 px-2.5 py-1 text-accent">
-                {formatDuration(note.duration)}
-              </span>
-            )}
-          </div>
+          {/* Metadata while editing */}
+          {isEditing && (
+            <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-muted">
+              <span>{formatDateLong(note.created_at)}</span>
+              {note.duration && (
+                <span className="rounded-full bg-accent/15 px-2.5 py-1 text-accent">
+                  {formatDuration(note.duration)}
+                </span>
+              )}
+            </div>
+          )}
 
           {needsRecovery && (
             <div

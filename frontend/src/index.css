@@ -13,6 +13,9 @@
   body,
   #root {
     min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   body {
@@ -25,6 +28,7 @@
     background-size: 180px 180px, 36px 36px, 36px 36px;
     min-height: 100vh;
     overflow-x: hidden;
+    overscroll-behavior-x: none;
   }
 }
 
@@ -134,21 +138,41 @@
   }
 
   .screen-shell {
+    box-sizing: border-box;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 100vh;
-    padding: calc(env(safe-area-inset-top) + 2rem) 1.25rem calc(env(safe-area-inset-bottom) + 7.75rem);
+    overflow-x: hidden;
+    padding: calc(env(safe-area-inset-top) + 1.25rem) 1rem calc(env(safe-area-inset-bottom) + 7.75rem);
   }
 
   .screen-header {
-    @apply mx-auto mb-6 max-w-2xl;
+    @apply mx-auto mb-4 w-full max-w-lg;
   }
 
   .screen-title {
-    @apply text-2xl font-semibold tracking-tight text-white;
+    @apply text-xl font-semibold tracking-tight text-white;
   }
 
   .screen-subtitle {
-    @apply mt-1.5 text-sm leading-relaxed text-[#6B6B80];
+    @apply mt-1 text-sm leading-relaxed text-[#6B6B80];
+  }
+
+  .screen-stack {
+    @apply mx-auto w-full max-w-lg min-w-0;
+  }
+
+  .note-row {
+    @apply flex items-start gap-3 min-w-0;
+  }
+
+  .note-row-body {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  .note-row-meta {
+    @apply flex flex-wrap items-center gap-1.5;
   }
 
   /* Unused by Home after notes-first redesign; kept for any residual refs */
@@ -210,6 +234,20 @@
     box-shadow:
       -20px -22px 0 -4px #F0F0F5,
       -6px -36px 0 -5px #6B6B80;
+  }
+
+  /* Compact list density — Notes / Gallery only (Home keeps .note-thumb) */
+  .note-thumb--list {
+    @apply h-12 w-12 rounded-xl;
+  }
+
+  .note-thumb--list::after {
+    inset: auto 6px 6px auto;
+    width: 7px;
+    height: 7px;
+    box-shadow:
+      -14px -16px 0 -3px #F0F0F5,
+      -4px -26px 0 -4px #6B6B80;
   }
 
   .note-thumb img {
@@ -287,6 +325,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
     background: #050505;
   }
 
@@ -299,9 +341,15 @@
     pointer-events: none;
   }
 
+  /* Flex column items default to min-width:auto and can blow past the
+     phone viewport; constrain them so mx-auto pages do not clip left
+     and shove the fixed bottom nav off-canvas. */
   .home-void > * {
     position: relative;
     z-index: 1;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .home-header {
@@ -390,6 +438,13 @@
   }
 
   .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    width: 100%;
+    max-width: 100%;
     background: rgba(5, 5, 5, 0.94);
     border-top: 1px solid rgba(168, 196, 48, 0.14);
     box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.45);
@@ -398,6 +453,17 @@
   .layout-home .bottom-nav {
     background: rgba(5, 5, 5, 0.96);
     border-top-color: rgba(168, 196, 48, 0.10);
+  }
+
+  .safe-area-pb {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .layout-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
   }
 
   .scrollbar-hide {

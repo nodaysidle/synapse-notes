@@ -538,19 +538,19 @@ export default function GraphView() {
   }, [workspace, fetchNotes])
 
   return (
-    <div className="h-screen w-full relative bg-base-dark overflow-hidden">
+    <div className="relative h-[100dvh] w-full max-w-full overflow-hidden bg-base-dark">
       {/* Error */}
       {error && (
-        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="absolute top-6 left-3 right-3 z-20 mx-auto max-w-sm">
           <div
-            className="px-6 py-4 rounded-2xl shadow-xl border border-red-500/30"
+            className="px-4 py-3 rounded-2xl shadow-xl border border-red-500/30"
             style={{ background: 'rgba(239, 68, 68, 0.1)', backdropFilter: 'blur(12px)' }}
           >
-            <div className="flex items-center gap-3">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <div className="flex items-center gap-3 min-w-0">
+              <svg className="h-5 w-5 shrink-0 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              <p className="text-sm text-red-300">{error}</p>
+              <p className="text-sm text-red-300 min-w-0 break-words">{error}</p>
             </div>
           </div>
         </div>
@@ -578,19 +578,19 @@ export default function GraphView() {
 
       {/* Back button */}
       <button
-        onClick={() => navigate('/notes')}
-        className="absolute top-6 left-6 z-10 px-4 py-2 min-h-[48px] rounded-xl text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 border border-white/10 hover:border-accent/30 active:bg-white/5"
+        onClick={() => navigate(-1)}
+        className="absolute top-4 left-3 z-10 flex max-w-[calc(100%-7rem)] items-center gap-2 rounded-xl border border-white/10 px-3 py-2 min-h-[44px] text-white/80 transition-all duration-200 hover:border-accent/30 hover:text-white active:bg-white/5"
         style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(12px)' }}
       >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        <span className="text-sm font-medium">Back to Notes</span>
+        <span className="truncate text-sm font-medium">Back</span>
       </button>
 
-      {/* Legend - collapsible, accessible font sizes */}
+      {/* Legend — sit above bottom nav on phone */}
       <div
-        className="absolute bottom-6 left-6 rounded-2xl shadow-xl z-10 border border-white/10"
+        className="absolute bottom-24 left-3 z-10 max-w-[min(18rem,calc(100%-1.5rem))] rounded-2xl border border-white/10 shadow-xl"
         style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(16px)' }}
       >
         <button
@@ -657,11 +657,10 @@ export default function GraphView() {
       {/* Stats badge */}
       {!loading && noteCount > 0 && (
         <div
-          className="absolute top-6 right-6 z-10 px-4 py-2 rounded-xl border border-accent/20"
+          className="absolute top-4 right-3 z-10 rounded-xl border border-accent/20 px-3 py-2"
           style={{ background: 'rgba(200, 255, 0, 0.1)', backdropFilter: 'blur(12px)' }}
         >
           <span className="text-accent text-sm font-medium">{noteCount} notes</span>
-          <span className="text-gray-500 text-sm ml-2 hidden sm:inline">in your knowledge graph</span>
         </div>
       )}
     </div>
