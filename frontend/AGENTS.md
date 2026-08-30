@@ -24,6 +24,10 @@ Owns client app source, package configuration, UI, routing, and frontend build/t
 - Preserve the current frontend stack and component architecture.
 - Keep UI polished, accessible, and dark-mode friendly where applicable.
 - Do not introduce new frameworks without approval.
+- Android Capacitor only for mobile chrome fixes in this tree: hardware/gesture Back is handled by `src/hooks/useAndroidBackButton.ts` (exit only from Home). Bottom tab `NavLink`s use `replace` so tab switches do not stack a back trap.
+- Non-Home screens use `.screen-void` (not `.home-void`) so list cards cannot escape a stacking context and cover `.bottom-nav`. `.home-void` is Home-only and uses `isolation: isolate` so its `z-index: 1` children stay contained. `.bottom-nav` is a viewport sibling with `z-index: 200`.
+- Non-Home screens must stay single-column on phone widths (overflow-x contained). Do not restyle Home when fixing other screens.
+- Non-Home void screens opt into `.void-readable` for brighter muted text and stronger glass borders on `#050505`. Home must not use `.void-readable`.
 
 ## Work Guidance
 

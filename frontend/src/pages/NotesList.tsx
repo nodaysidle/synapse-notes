@@ -89,23 +89,12 @@ export default function NotesList() {
 
 
   return (
-    <div className="screen-shell home-void">
-      {/* Header */}
+    <div className="screen-shell screen-void void-readable">
       <div className="screen-header">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h1 className="screen-title">Notes</h1>
-            <p className="screen-subtitle">Voice memory</p>
-          </div>
-          <div className="rounded-2xl border border-accent/15 bg-accent/10 px-3 py-2 text-right">
-            <div className="text-lg font-bold text-accent">{notes.length}</div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Total</div>
-          </div>
-        </div>
+        <h1 className="screen-title">Notes</h1>
       </div>
 
-      {/* Search */}
-      <div className="max-w-2xl mx-auto mb-6">
+      <div className="screen-stack mb-4">
         <Input
           type="text"
           placeholder="Search notes..."
@@ -114,70 +103,64 @@ export default function NotesList() {
         />
       </div>
 
-      {/* Loading */}
       {loading && (
         <div className="flex justify-center py-12">
           <Spinner label="Loading notes..." />
         </div>
       )}
 
-      {/* Error */}
       {error && (
-        <div className="max-w-2xl mx-auto mb-6">
-          <Card className="bg-red-900/20 border-red-500/50">
+        <div className="screen-stack mb-4">
+          <Card className="bg-red-900/20 border-red-500/50 !p-3">
             <p className="text-red-400 text-sm">{error}</p>
           </Card>
         </div>
       )}
 
-      {/* Empty State */}
       {!loading && filteredNotes.length === 0 && (
-        <div className="max-w-2xl mx-auto">
-          <Card className="text-center py-12">
-            <div className="empty-orbit" aria-hidden="true" />
+        <div className="screen-stack">
+          <Card className="text-center py-10 !p-4">
             <h3 className="text-white font-medium mb-2">
               {searchQuery ? 'No matching notes' : 'No notes yet'}
             </h3>
             <p className="text-muted text-sm">
               {searchQuery
                 ? 'Try a different search'
-                : 'Tap the mic to capture your first thought'}
+                : 'Open Capture to record your first note.'}
             </p>
           </Card>
         </div>
       )}
 
-      {/* Notes Grid */}
       {!loading && filteredNotes.length > 0 && (
-        <div className="max-w-2xl mx-auto space-y-3">
+        <div className="screen-stack space-y-2">
           {filteredNotes.map((note) => (
             <Card
               key={note.id}
               variant="interactive"
               onClick={() => navigate(`/notes/${note.id}`)}
+              className="!p-3"
             >
-              <div className="flex items-start gap-4">
-                <div className="note-thumb">
+              <div className="note-row">
+                <div className="note-thumb note-thumb--list">
                   {note.image_url && <img src={note.image_url} alt="" loading="lazy" />}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="mb-1 flex items-center gap-2">
-                    <h3 className="min-w-0 truncate text-white font-semibold">{note.title}</h3>
-                    <span className={`status-pill ${statusClass(note.embedding_status)} shrink-0`}>
+                <div className="note-row-body">
+                  <h3 className="truncate text-sm font-semibold text-white">{note.title}</h3>
+                  <div className="note-row-meta">
+                    <span className={`status-pill ${statusClass(note.embedding_status)}`}>
                       {statusLabel(note.embedding_status)}
                     </span>
+                    <span className="text-xs text-muted">{formatDateShort(note.created_at)}</span>
+                    {note.duration ? (
+                      <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] text-accent">
+                        {formatDuration(note.duration)}
+                      </span>
+                    ) : null}
                   </div>
-                  <p className="text-sm text-muted line-clamp-2 mt-1">
+                  <p className="line-clamp-2 text-xs text-muted">
                     {note.transcript || note.content || 'No content'}
                   </p>
-                </div>
-                <div className="flex flex-col items-end gap-2 shrink-0">
-                  <span className="text-xs text-muted">{formatDateShort(note.created_at)}</span>
-                  {note.duration && (
-                    <span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full">
-                      {formatDuration(note.duration)}
-                    </span>
-                  )}
                 </div>
               </div>
             </Card>

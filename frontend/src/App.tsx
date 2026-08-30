@@ -9,6 +9,7 @@ import Gallery from './pages/Gallery'
 import GraphView from './pages/GraphView'
 import Record from './pages/Record'
 import { Spinner } from './components/ui/Spinner'
+import { useAndroidBackButton } from './hooks/useAndroidBackButton'
 
 // Show spinner while auth + workspace auto-bootstrap
 function RequireReady({ children }: { children: React.ReactNode }) {
@@ -27,6 +28,8 @@ function RequireReady({ children }: { children: React.ReactNode }) {
 }
 
 function AppRoutes() {
+    useAndroidBackButton()
+
     return (
         <Routes>
             {/* Main app routes */}

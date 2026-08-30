@@ -13,6 +13,10 @@
   body,
   #root {
     min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
@@ -25,6 +29,8 @@
     background-size: 180px 180px, 36px 36px, 36px 36px;
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
   }
 }
 
@@ -133,22 +139,88 @@
     @apply text-[#6B6B80];
   }
 
+  /*
+   * Non-Home void screens only (add class void-readable on the page shell).
+   * Home keeps the quieter #6B6B80 / soft glass treatment.
+   */
+  .void-readable .text-muted,
+  .void-readable .text-body,
+  .void-readable .screen-subtitle {
+    color: #B4B4C4;
+  }
+
+  .void-readable .glass,
+  .void-readable .glass-elevated,
+  .void-readable .card {
+    background: rgba(22, 22, 30, 0.92);
+    border-color: rgba(200, 255, 0, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  .void-readable .card:hover {
+    background: rgba(28, 28, 38, 0.95);
+    border-color: rgba(200, 255, 0, 0.28);
+  }
+
+  .void-readable .glass-input {
+    background: rgba(14, 14, 20, 0.88);
+    border-color: rgba(200, 255, 0, 0.2);
+    color: #F0F0F5;
+  }
+
+  .void-readable .glass-input::placeholder {
+    color: #8E8EA0;
+  }
+
+  .status-recording {
+    color: #ff8a8a;
+    background: rgba(255, 103, 103, 0.14);
+  }
+
+  .status-recording::before {
+    background: #ff6767;
+    box-shadow: 0 0 0 3px rgba(255, 103, 103, 0.18);
+  }
+
   .screen-shell {
+    box-sizing: border-box;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 100vh;
-    padding: calc(env(safe-area-inset-top) + 2rem) 1.25rem calc(env(safe-area-inset-bottom) + 7.75rem);
+    overflow-x: hidden;
+    overflow-x: clip;
+    padding: calc(env(safe-area-inset-top) + 1.25rem) 1rem calc(env(safe-area-inset-bottom) + 7.75rem);
   }
 
   .screen-header {
-    @apply mx-auto mb-6 max-w-2xl;
+    @apply mx-auto mb-4 w-full max-w-lg;
   }
 
   .screen-title {
-    @apply text-2xl font-semibold tracking-tight text-white;
+    @apply text-xl font-semibold tracking-tight text-white;
   }
 
   .screen-subtitle {
-    @apply mt-1.5 text-sm leading-relaxed text-[#6B6B80];
+    @apply mt-1 text-sm leading-relaxed text-[#6B6B80];
+  }
+
+  .screen-stack {
+    @apply mx-auto w-full max-w-lg min-w-0;
+  }
+
+  .note-row {
+    @apply flex items-start gap-3 min-w-0;
+  }
+
+  .note-row-body {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  .note-row-meta {
+    @apply flex flex-wrap items-center gap-1.5;
   }
 
   /* Unused by Home after notes-first redesign; kept for any residual refs */
@@ -210,6 +282,20 @@
     box-shadow:
       -20px -22px 0 -4px #F0F0F5,
       -6px -36px 0 -5px #6B6B80;
+  }
+
+  /* Compact list density — Notes / Gallery only (Home keeps .note-thumb) */
+  .note-thumb--list {
+    @apply h-12 w-12 rounded-xl;
+  }
+
+  .note-thumb--list::after {
+    inset: auto 6px 6px auto;
+    width: 7px;
+    height: 7px;
+    box-shadow:
+      -14px -16px 0 -3px #F0F0F5,
+      -4px -26px 0 -4px #6B6B80;
   }
 
   .note-thumb img {
@@ -284,9 +370,18 @@
   }
 
   .home-void {
+    /* isolation creates a stacking context so > * { z-index: 1 } cannot
+       escape to the root and paint over the fixed bottom tab bar. */
     position: relative;
+    z-index: 0;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-x: clip;
     background: #050505;
   }
 
@@ -299,9 +394,38 @@
     pointer-events: none;
   }
 
+  /* Flex column items default to min-width:auto and can blow past the
+     phone viewport; constrain them so mx-auto pages do not clip left. */
   .home-void > * {
     position: relative;
     z-index: 1;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /*
+   * Notes / Gallery / NoteDetail void black — same paint as Home void,
+   * WITHOUT the fixed ::before + z-index:1 children pattern that let list
+   * cards escape the stacking context and steal taps from .bottom-nav.
+   * Do not use on Home.
+   */
+  .screen-void {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-x: clip;
+    background: #050505;
+  }
+
+  .screen-void > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .home-header {
@@ -390,14 +514,37 @@
   }
 
   .bottom-nav {
-    background: rgba(5, 5, 5, 0.94);
+    /* Above any page content. Lists must never cover or steal taps. */
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200;
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    background: rgba(5, 5, 5, 0.96);
     border-top: 1px solid rgba(168, 196, 48, 0.14);
     box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.45);
+    transform: translateZ(0);
+    pointer-events: auto;
   }
 
   .layout-home .bottom-nav {
     background: rgba(5, 5, 5, 0.96);
     border-top-color: rgba(168, 196, 48, 0.10);
+  }
+
+  .safe-area-pb {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .layout-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    /* No overflow-x here — clipping the shell also clips a nested fixed nav
+       on some Android WebViews. Content overflow is handled on main / screens. */
   }
 
   .scrollbar-hide {
