@@ -5,8 +5,8 @@
 <h1 align="center">Synapse Notes</h1>
 
 <p align="center">
-  Speak → transcript → embedding → AI image → Home.<br>
-  One tap on the mic starts it. Open Graph next — keyword edges only.
+  <strong>Voice-first Android notes app with transcription, semantic memory, and graph-based exploration.</strong><br>
+  Speak → transcript → embedding → AI image → Home.
 </p>
 
 <p align="center">
