@@ -5,8 +5,8 @@
 <h1 align="center">Synapse Notes</h1>
 
 <p align="center">
-  <strong>Voice-first Android notes app with transcription, semantic memory, and graph-based exploration.</strong><br>
-  Speak → transcript → embedding → AI image → Home.
+  <strong>Voice-first Android notes app with transcription, embeddings, and graph-based exploration.</strong><br>
+  Speak → transcribe → embed → image → Home.
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ Spoken words
   → OpenRouter transcription
        title = first sentence of the transcript
   → OpenRouter embedding (768-d, stored on the note)
-  → OpenRouter AI image (optional companion visual)
+  → OpenRouter image (optional companion visual)
   → note lands on Home   ← capture pipeline ends here
 
 Open Graph (nav): 3D visualization of your notes.
@@ -50,7 +50,7 @@ Speak → transcribe → embed → image is the automatic capture pipeline. Grap
 | **Speak** | Tap the muted-green mic. Audio uploads to Supabase Storage. |
 | **Transcribe** | OpenRouter turns speech into text. Title = first sentence. |
 | **Embed** | A 768-d vector is stored with the note (used later for similar-notes on detail). |
-| **Image** | An optional AI image is generated and stored. Failure here does **not** drop the note. |
+| **Image** | An optional image is generated and stored. Failure here does **not** drop the note. |
 | **Home** | Pipeline ends: the note shows up under the mic (last **5** notes). |
 
 **Graph (screen):** Open anytime from nav. Three.js 3D view; links today are **shared keywords** (≥2), not embedding edges / `match_notes`. A note with no keyword overlap appears as an isolated node.
@@ -82,7 +82,7 @@ All of the journey’s AI steps run in Supabase Edge Functions. The OpenRouter k
 |---|---|---|
 | Transcribe | `openai/gpt-4o-mini-transcribe` | `openai/whisper-large-v3`, `google/chirp-3` |
 | Embed | `google/gemini-embedding-001` (768-d) | — (single model; no fallback in repo) |
-| AI image | `krea/krea-2-medium-turbo` | `google/gemini-3.1-flash-lite-image` |
+| Image | `krea/krea-2-medium-turbo` | `google/gemini-3.1-flash-lite-image` |
 | Ask notes (no UI) | `openai/gpt-5.6-luna` | `google/gemini-2.5-flash-lite` |
 
 Overrides: [`supabase/.env.example`](supabase/.env.example). Keep embeddings at 768 dimensions unless you migrate the schema and re-embed every note.
