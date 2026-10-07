@@ -6,13 +6,13 @@ NODAYSIDLE quality bar: 9.7/10. Ship installable, polished apps. Finished beats 
 
 ## Repository Map
 
-If `codemap.md` exists in the project root, read it first for architecture, entry points, directory responsibilities, and data-flow context.
+Read `docs/internal/codemap.md` first for architecture, entry points, directory responsibilities, and data-flow context (folder-level `codemap.md` files exist under `frontend/`).
 
-If no root `codemap.md` exists, fall back to:
+Then use:
 - this `AGENTS.md`
 - the closest child `AGENTS.md` files on the path to the target
 - `README.md`
-- `PRD.md`, `ARD.md`, `TRD.md`, `TASKS.md`, `TODO.md`, and `CHANGELOG.md` when present
+- `docs/` (public docs; `docs/internal/` engineering archive; `docs/plans/` superseded January plans)
 - real entry-point files and config files
 
 ## DOX Self-Documentation Contract

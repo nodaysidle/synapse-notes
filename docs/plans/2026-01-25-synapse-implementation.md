@@ -1,3 +1,5 @@
+> **Superseded (marked 2026-10-07).** This January 2026 plan describes an earlier web direction (glassmorphism with teal/cyan, workspace collaboration, Vercel deployment). The shipped product is the Android APK in the root `README.md`: void-black Home with a muted-green mic, no join/workspace onboarding. Pipeline statuses are **Queued → Live → Ready / Failed**. Kept for history only.
+
 # Synapse Notes Redesign - Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.

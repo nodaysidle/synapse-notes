@@ -27,4 +27,4 @@ Owns public/internal project docs, plans, audit notes, prompts, and release-supp
 
 ## Child DOX Index
 
-None.
+- `internal/AGENTS.md`: engineering archive (codemap, retained notes)

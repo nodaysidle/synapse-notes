@@ -2,12 +2,13 @@
 
 ## Project Purpose
 
-**Synapse Notes** is a voice-first AI notes app. You speak, the app transcribes the note, enriches it with generated media, creates embeddings for semantic search, and connects related notes in a 3D graph.
+**Synapse Notes** is a voice-first AI notes app. You speak, the app transcribes the note, enriches it with an optional generated image, and stores an embedding. Embeddings power "similar notes" on note detail (via `semantic-search`). The 3D graph links notes that share at least 2 keywords.
 
 Distributed as:
 
-- **Web app** through Vite/React
-- **Android app** through Capacitor 8
+- **Android APK only** (Capacitor 8, `com.synapse.notes`, debug APK sideload). The Vite/React frontend is the app's UI layer and is not shipped as a separate web app.
+
+> **History:** the project began from a web plan (Supabase + Vercel web app with workspace collaboration; see `docs/plans/2026-01-25-*`, now superseded) and evolved into the Android APK described in the root `README.md`.
 
 ## Data Flow
 
