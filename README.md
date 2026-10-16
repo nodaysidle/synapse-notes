@@ -26,16 +26,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.3/synapse-notes-0.4.3-debug.apk"><strong>Download v0.4.3 debug APK</strong></a>
+  <a href="https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.5/synapse-notes-0.4.5-debug.apk"><strong>Download v0.4.5 debug APK</strong></a>
   ·
-  <a href="https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.3">v0.4.3 release</a>
+  <a href="https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.5">v0.4.5 release</a>
   ·
   <a href="https://github.com/nodaysidle/synapse-notes/releases">All releases</a>
 </p>
 
 <p align="center">
   <img alt="Android" src="https://img.shields.io/badge/Android-24%2B-C8FF00?style=flat-square&logo=android&logoColor=0A0A0F">
-  <img alt="Version" src="https://img.shields.io/badge/v0.4.3-debug-6B6B80?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/v0.4.5-debug-6B6B80?style=flat-square">
   <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black">
   <img alt="Supabase" src="https://img.shields.io/badge/Backend-Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white">
   <img alt="OpenRouter" src="https://img.shields.io/badge/AI-OpenRouter-6467F2?style=flat-square">
@@ -75,7 +75,7 @@ Statuses while the pipeline runs: Home, Notes, and note detail show **Queued** �
 
 Android only (`com.synapse.notes`). Debug APK sideload — no iOS, no Play Store. First launch: anonymous auth and an auto-created **My Notes** space. No join or workspace onboarding.
 
-## What’s on screen (v0.4.3)
+## What’s on screen (v0.4.5)
 
 Phone-tested on a **Xiaomi M2007J3SY** (Android 12). Notes and Gallery are compact single-column layouts (no sideways scroll). Bottom nav (**Capture** / **Notes** / **Gallery** / **Graph**) stays visible and tappable. Android Back pops in-app history and only exits the app from Home; the Capture tab stays `/` (Home).
 
@@ -117,9 +117,21 @@ Overrides: [`supabase/.env.example`](supabase/.env.example). Keep embeddings at 
 
 The APK is how you walk the journey on a phone.
 
-1. Download [`synapse-notes-0.4.3-debug.apk`](https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.3/synapse-notes-0.4.3-debug.apk) from the [v0.4.3 release](https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.3).
+1. Download [`synapse-notes-0.4.5-debug.apk`](https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.5/synapse-notes-0.4.5-debug.apk) from the [v0.4.5 release](https://github.com/nodaysidle/synapse-notes/releases/tag/v0.4.5).
 2. Sideload on Android 24+. Allow install from unknown sources for your file manager/browser.
 3. Debug-signed testing build — not a Play Store release.
+
+Verify the download ([SHA-256 checksum](https://github.com/nodaysidle/synapse-notes/releases/download/v0.4.5/synapse-notes-0.4.5-debug.apk.sha256)):
+
+| Asset | SHA256 |
+|-------|--------|
+| `synapse-notes-0.4.5-debug.apk` | `0f4cb1baf1645c84d6f68c3520383f84b3149c4647d41fab2819a358a42ecd29` |
+
+```bash
+sha256sum -c synapse-notes-0.4.5-debug.apk.sha256
+```
+
+Upgrading from v0.4.3: this build is signed with a different debug key, so uninstall v0.4.3 first (local notes on the device are removed; notes in Supabase are kept).
 
 Sideloaded and phone-tested on a **Xiaomi M2007J3SY** (Android 12).
 
